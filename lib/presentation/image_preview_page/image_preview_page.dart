@@ -1,4 +1,5 @@
 import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'controller/image_preview_controller.dart';
 import 'models/image_preview_model.dart';
 import 'package:facemarkapp/core/app_export.dart';
@@ -11,22 +12,35 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
-class ImagePreviewPage extends StatefulWidget{
+class ImagePreviewPage extends StatefulWidget {
   @override
   _ImagePreviewPageState createState() => _ImagePreviewPageState();
 }
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
-   late File? _image;
-  late List<dynamic> _usns;
+//  late List<dynamic> _usns;
+
+  late Image _image;
+  final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-
+    _image = Image.network('https://http://facemark.me:8000/path/to/image/image.jpg');
   }
 
-@override
+  Future<void> pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = Image.file(File(pickedFile.path));
+
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
@@ -65,16 +79,16 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                                         mainAxisAlignment:
                                         MainAxisAlignment.start,
                                         children: [
-                                          CustomIconButton(
-                                              height: 39,
-                                              width: 39,
-                                              margin: getMargin(left: 1),
-                                              onTap: () {
-                                                onTapBtnArrowleft();
-                                              },
-                                              child: CustomImageView(
-                                                  svgPath: ImageConstant
-                                                      .imgArrowleftBlack90001)),
+                                          // CustomIconButton(
+                                          //     height: 39,
+                                          //     width: 39,
+                                          //     margin: getMargin(left: 1),
+                                          //     onTap: () {
+                                          //       onTapBtnArrowleft();
+                                          //     },
+                                          //     child: CustomImageView(
+                                          //         svgPath: ImageConstant
+                                          //             .imgArrowleftBlack90001)),
                                           Padding(
                                               padding: getPadding(top: 14),
                                               child: RichText(
@@ -115,49 +129,48 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
     Get.back();
   }
 
-  onTapImgImageThree() {
-    Get.toNamed(AppRoutes.attendancePageScreen);
-  }
 
   onTapBtnRetry() {
     setState(() {
-      _image = null;
+      _image = Image.network('https://http://facemark.me:8000/path/to/image/image.jpg');
     });
   }
 
-  onTapBtnOk() async {
-    if (_image != null) {
-      try {
-        final List usns = await sendImage(File('path/to/image/image.jpg'), 'your_token_here');
-        setState(() {
-          _usns = usns;
-        });
-        Get.toNamed(AppRoutes.attendancePageScreen, arguments: _usns);
-      } catch (e) {
-        Get.snackbar('Error', 'Failed to send image: $e');
-      }
-    } else {
-      Get.snackbar('Error', 'Please capture an image first');
-    }
-  }
-  Future<List<dynamic>> sendImage(File imageFile, String token) async {
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://facemark.me:8000/face/present/'),
-    );
+  // onTapBtnOk() async {
+  //   if (_image != null) {
+  //     try {
+  //       final List usns =
+  //           await sendImage(File('path/to/image/image.jpg'), 'your_token_here');
+  //       setState(() {
+  //         _usns = usns;
+  //       });
+  //       Get.toNamed(AppRoutes.attendancePageScreen, arguments: _usns);
+  //     } catch (e) {
+  //       Get.snackbar('Error', 'Failed to send image: $e');
+  //     }
+  //   } else {
+  //     Get.snackbar('Error', 'Please capture an image first');
+  //   }
+  // }
 
-    final file = await http.MultipartFile.fromPath('image', imageFile.path);
-    request.files.add(file);
-    request.headers.addAll(<String, String>{'Authorization': 'Token $token'});
+//   Future<List<dynamic>> sendImage(File imageFile, String token) async {
+//     final request = http.MultipartRequest(
+//       'POST',
+//       Uri.parse('http://facemark.me:8000/face/present/'),
+//     );
+//
+//     final file = await http.MultipartFile.fromPath('image', imageFile.path);
+//     request.files.add(file);
+//     request.headers.addAll(<String, String>{'Authorization': 'Token $token'});
+//
+//     final response = await request.send();
+//
+//     if (response.statusCode == 200) {
+//       final responseString = await response.stream.bytesToString();
+//       return json.decode(responseString);
+//     } else {
+//       throw Exception('Failed to send image');
+//     }
+//   }
+ }
 
-    final response = await request.send();
-
-    if (response.statusCode == 200) {
-      final responseString = await response.stream.bytesToString();
-      return json.decode(responseString);
-    } else {
-      throw Exception('Failed to send image');
-    }
-  }
-
-}

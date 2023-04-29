@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/widgets/app_bar/appbar_image.dart';
@@ -15,15 +17,34 @@ class _HomePageState extends State<Homepage> {
   String? _selectedSection;
   late DateTime _selectedDate;
   String? _selectedSubject;
-  XFile? _image;
+  late Image _image;
 
   _HomePageState() {
     _selectedDate = DateTime.now();
   }
 
-  Future<XFile> _takeAttendance() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-    return pickedFile!;
+  final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _image = Image.network('https://example.com/image.jpg');
+  }
+
+  Future<void> pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = Image.file(File(pickedFile.path));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImagePreviewPage(),
+          ),
+        );
+      });
+    }
   }
 
 
@@ -292,7 +313,7 @@ class _HomePageState extends State<Homepage> {
                                                 _selectedSubject != null &&
                                                 _selectedSection != null &&
                                                 _selectedDate != null
-                                                ? () => _takeAttendance().then((value) {
+                                                ? () => pickImage().then((value) {
                                             })
                                                 : null,
                                             style: ButtonStyle(
