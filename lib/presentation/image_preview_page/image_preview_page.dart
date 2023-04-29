@@ -13,20 +13,23 @@ import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
 class ImagePreviewPage extends StatefulWidget {
+  final Image image;
+
+  const ImagePreviewPage({Key? key, required this.image}) : super(key: key);
+
   @override
   _ImagePreviewPageState createState() => _ImagePreviewPageState();
 }
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
-//  late List<dynamic> _usns;
-
   late Image _image;
+
   final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    _image = Image.network('https://http://facemark.me:8000/path/to/image/image.jpg');
+    _image = widget.image;
   }
 
   Future<void> pickImage() async {
@@ -35,7 +38,12 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
     if (pickedFile != null) {
       setState(() {
         _image = Image.file(File(pickedFile.path));
-
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImagePreviewPage(image: _image),
+          ),
+        );
       });
     }
   }
@@ -74,21 +82,19 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                                     margin: getMargin(top: 45),
                                     padding: getPadding(left: 19, right: 19),
                                     child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          // CustomIconButton(
-                                          //     height: 39,
-                                          //     width: 39,
-                                          //     margin: getMargin(left: 1),
-                                          //     onTap: () {
-                                          //       onTapBtnArrowleft();
-                                          //     },
-                                          //     child: CustomImageView(
-                                          //         svgPath: ImageConstant
-                                          //             .imgArrowleftBlack90001)),
+                                          CustomIconButton(
+                                              height: 39, width: 39,
+                                              margin: getMargin(left: 1),
+                                              onTap: () {
+                                                onTapBtnArrowleft();
+                                              },
+                                              child: CustomImageView(
+                                                  svgPath: ImageConstant
+                                                      .imgArrowleftBlack90001)),
+
                                           Padding(
                                               padding: getPadding(top: 14),
                                               child: RichText(
@@ -120,13 +126,23 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                                                   ]),
                                                   textAlign: TextAlign.left))
                                         ])),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(7.5), // add some padding
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(horizontal: 15.0), // add some margin
+                                      child: _image,
+                                    ),
+                                  ),
+                                ),
                                 Spacer()
-                              ]))),
+                              ]))
+                  ),
                  ])))))));
   }
 
   onTapBtnArrowleft() {
-    Get.back();
+    Get.offAll(Homepage());
   }
 
 

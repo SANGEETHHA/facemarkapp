@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:facemarkapp/widgets/app_bar/appbar_image.dart';
 import 'package:facemarkapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
+
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -21,13 +27,13 @@ class _HomePageState extends State<Homepage> {
   _HomePageState() {
     _selectedDate = DateTime.now();
   }
-
+  late File _imageFile;
   final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    _image = Image.asset('assets/images/img_image1_195x390.png');
+    _imageFile = File('assets/images/default_image.jpg');
   }
 
   Future<void> pickImage() async {
@@ -35,16 +41,17 @@ class _HomePageState extends State<Homepage> {
 
     if (pickedFile != null) {
       setState(() {
-        _image = Image.file(File(pickedFile.path));
+        _imageFile = File(pickedFile.path);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ImagePreviewPage(),
+            builder: (context) => ImagePreviewPage(image: Image.file(_imageFile)),
           ),
         );
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

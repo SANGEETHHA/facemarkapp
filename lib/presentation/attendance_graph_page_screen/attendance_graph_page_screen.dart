@@ -538,7 +538,8 @@ class AttendanceGraphPageScreen
       case AppRoutes.homePage:
         return Homepage();
       case AppRoutes.imagePreviewPage:
-        return ImagePreviewPage();
+        var image;
+        return ImagePreviewPage(image: image);
       case AppRoutes.dashboardPageScreen:
         return DashboardPageScreen();
       case AppRoutes.profileSettingsPage:
