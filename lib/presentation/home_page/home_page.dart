@@ -11,8 +11,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
-
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -45,13 +43,13 @@ class _HomePageState extends State<Homepage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ImagePreviewPage(image: Image.file(_imageFile)),
+            builder: (context) =>
+                ImagePreviewPage(image: Image.file(_imageFile)),
           ),
         );
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
