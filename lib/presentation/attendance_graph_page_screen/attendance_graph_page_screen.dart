@@ -506,8 +506,14 @@ class AttendanceGraphPageScreen
                                                 onPressed: () {
                                                   Get.toNamed(AppRoutes.sendAttendancePageScreen);
                                                 },
-                                                child: Text('Send Attendance'),
-                                              ),
+                                                child: Text(
+                                                  'Send Attendance',
+                                                  style: TextStyle(
+                                                    backgroundColor: Colors.black,
+                                                  ),),
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                                                ),),
 
                                             ])))
                               ])))

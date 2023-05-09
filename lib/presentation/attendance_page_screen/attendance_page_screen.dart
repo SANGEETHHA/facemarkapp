@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'controller/attendance_page_controller.dart';
 import 'package:facemarkapp/core/app_export.dart';
+import 'package:facemarkapp/presentation/home_page/home_page.dart';
 import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
@@ -9,20 +11,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:facemarkapp/presentation/api.dart';
+
 
 class AttendancePageScreen extends StatefulWidget {
-  final String selectedBranch;
-  final String selectedSection;
-  final String selectedSubject;
-  final DateTime selectedDate;
-  final String imagePath;
 
-  AttendancePageScreen({
-    required this.selectedBranch,
-    required this.selectedSection,
-    required this.selectedSubject,
-    required this.selectedDate,
-    required this.imagePath, required List<String> detectedUsns,
+ const AttendancePageScreen({
+     required List<String> usns,
   });
 
   @override
@@ -30,51 +25,36 @@ class AttendancePageScreen extends StatefulWidget {
 }
 
 class _AttendancePageScreenState extends State<AttendancePageScreen> {
-  List<String> detectedUSNs = [];
+  // List<dynamic> branches = [];
+  // List<dynamic> subjects = [];
+  // List<dynamic> sections = [];
+   late List<dynamic> usns;
 
   final AttendancePageController _attendancePageController = AttendancePageController();
 
   @override
   void initState() {
     super.initState();
-    detectStudentsInPhoto(widget.imagePath);
+    usns = [];
+    // getBranches().then((value) {
+    //   setState(() {
+    //     branches = value;
+    //   });
+    // });
+    // getSubjects().then((value) {
+    //   setState(() {
+    //     subjects = value;
+    //   });
+    // });
+    // getSections().then((value) {
+    //   setState(() {
+    //     sections = value;
+    //   });
+    // });
+
   }
 
-  Future<void> detectStudentsInPhoto(String imagePath) async {
-    var url = Uri.parse('http://facemark.me:8000//face/present/'); // Replace with actual URL
-    var request = http.MultipartRequest('POST', url);
-    request.files.add(await http.MultipartFile.fromPath('path/to/image/image.jpg', imagePath));
-    var response = await request.send();
-    var responseString = await response.stream.bytesToString();
-    var decodedResponse = json.decode(responseString);
-    List<dynamic> usns = decodedResponse['usns'];
-    setState(() {
-      detectedUSNs = List<String>.from(usns);
-    });}
 
-  Future<List<String>> fetchBranches() async {
-    var url = Uri.parse('http://facemark.me:8000//api/branch/'); // Replace with actual URL
-    var response = await http.get(url);
-    var decodedResponse = json.decode(response.body);
-    List<dynamic> branches = decodedResponse['branches'];
-    return List<String>.from(branches);
-  }
-
-  Future<List<String>> fetchSubjects() async {
-    var url = Uri.parse('http://facemark.me:8000//api/subject/'); // Replace with actual URL
-    var response = await http.get(url);
-    var decodedResponse = json.decode(response.body);
-    List<dynamic> subjects = decodedResponse['subjects'];
-    return List<String>.from(subjects);
-  }
-
-  Future<List<String>> fetchSections() async {
-    var url = Uri.parse('http://facemark.me:8000//api/section/'); // Replace with actual URL
-    var response = await http.get(url);
-    var decodedResponse = json.decode(response.body);
-    List<dynamic> sections = decodedResponse['sections'];
-    return List<String>.from(sections);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,44 +102,27 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
                                   style: AppStyle.txtPoppinsBold30)),
-                                  Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
                                 Text(
-                                'Branch: ${widget.selectedBranch}',
-                                style: TextStyle(fontSize: 20.0),
+                                  ' Students Present:',
+                                  style: TextStyle(fontSize: 20),
                                 ),
-                                SizedBox(height: 10.0),
-                                Text(
-                                'Section: ${widget.selectedSection}',
-                                style: TextStyle(fontSize: 20.0),
+                                SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 10,
+                                  children: [
+                                    for (var usn in usns)
+                                      Chip(
+                                        label: Text(usn),
+                                      ),
+                                  ],
                                 ),
-                                SizedBox(height: 10.0),
-                                Text(
-                                'Subject: ${widget.selectedSubject}',
-                                style: TextStyle(fontSize: 20.0),
-                                ),
-                                SizedBox(height: 10.0),
-                                Text(
-                                'Date: ${widget.selectedDate}',
-                                style: TextStyle(fontSize: 20.0),
-                                ),
-                                SizedBox(height: 20.0),
-                                Text(
-                                'Detected USNs:',
-                                style: TextStyle(fontSize: 20.0),
-                                ),
-                                SizedBox(height: 10.0),
-                                Expanded(
-                                child: ListView.builder(itemCount: detectedUSNs.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                      child: Text(
-                                        detectedUSNs[index],
-                                        style: TextStyle(fontSize: 18.0),),);},),),],),),
+                              ],
+                            ),
+                          ),
 
                           Align(
                               alignment: Alignment.center,
@@ -204,7 +167,7 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
                                         // Request camera permission
                                         if (await Permission.camera.request().isGranted) {
                                           // Navigate to camera screen
-                                          final image = await ImagePicker().getImage(source: ImageSource.camera);
+                                          final image = await ImagePicker().pickImage(source: ImageSource.camera);
                                           // Add code to process the captured image
                                         } else {
                                           // Display error message if camera permission is not granted
@@ -232,18 +195,13 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
                                       text: "lbl_manually".tr,
                                       margin: getMargin(top: 5, bottom: 5),
                                       fontStyle: ButtonFontStyle.InterSemiBold20,
-                                    ),)])))]))),)))));
+                                    ),)])))
+                        ]))),)))));
   }
 
   onTapBtnArrowleft() {
-    final previousRoute = Get.previousRoute;
-    if (previousRoute == null) {
-      // No previous route, do nothing
-      return;
-    }
-    Get.to(previousRoute);
+    Get.offAll(Homepage());
   }
-
 
   onTapTxtButtonprimary() {
     Get.toNamed(AppRoutes.attendanceGraphPageScreen);

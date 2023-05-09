@@ -20,7 +20,7 @@ class _HomePageState extends State<Homepage> {
   String? _selectedSection;
   late DateTime _selectedDate;
   String? _selectedSubject;
-  late Image _image;
+ // late Image _image;
 
   _HomePageState() {
     _selectedDate = DateTime.now();
@@ -44,7 +44,7 @@ class _HomePageState extends State<Homepage> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                ImagePreviewPage(image: Image.file(_imageFile)),
+                ImagePreviewPage(image: _imageFile),
           ),
         );
       });
@@ -143,10 +143,8 @@ class _HomePageState extends State<Homepage> {
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
                                                   RichText(
                                                     text: TextSpan(
@@ -155,24 +153,18 @@ class _HomePageState extends State<Homepage> {
                                                           text: 'Select',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 14,
-                                                            letterSpacing:
-                                                                getHorizontalSize(
-                                                                    0.5),
+                                                            letterSpacing: getHorizontalSize(0.5),
                                                           ),
                                                         ),
                                                         TextSpan(
                                                           text: ' Branch',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 14,
-                                                            letterSpacing:
-                                                                getHorizontalSize(
-                                                                    0.5),
+                                                            letterSpacing: getHorizontalSize(0.5),
                                                           ),
                                                         ),
                                                       ],
@@ -184,62 +176,42 @@ class _HomePageState extends State<Homepage> {
                                                     child:
                                                         DropdownButton<String>(
                                                       hint: Text(
-                                                          'Aeronautical Engineering'
-                                                              .tr),
+                                                          'Aeronautical Engineering'.tr),
                                                       value: _selectedBranch,
-                                                      onChanged:
-                                                          (String? value) {
+                                                      onChanged: (String? value) {
                                                         setState(() {
-                                                          _selectedBranch =
-                                                              value;
+                                                          _selectedBranch = value;
                                                         });
                                                       },
                                                       items: <String>[
                                                         'Aeronautical Engineering',
                                                         'Tool Engineering',
                                                       ].map<
-                                                              DropdownMenuItem<
-                                                                  String>>(
+                                                              DropdownMenuItem<String>>(
                                                           (String value) {
-                                                        return DropdownMenuItem<
-                                                            String>(
+                                                        return DropdownMenuItem<String>(
                                                           value: value,
-                                                          child: Text(
-                                                            value,
+                                                          child: Text(value,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .black54, // set the color of the dropdown items to black
+                                                              color: Colors.black54, // set the color of the dropdown items to black
                                                             ),
                                                           ),
                                                         );
                                                       }).toList(),
                                                       focusNode: FocusNode(),
-                                                      icon: Icon(Icons
-                                                          .arrow_drop_down),
-                                                      iconEnabledColor:
-                                                          Colors.black,
-                                                      iconDisabledColor:
-                                                          Colors.grey,
-                                                      iconSize: 26,
-                                                      style: AppStyle
-                                                          .txtPoppinsBold14
+                                                      icon: Icon(Icons.arrow_drop_down),
+                                                      iconEnabledColor: Colors.black,
+                                                      iconDisabledColor: Colors.grey,
+                                                      iconSize: 26, style: AppStyle.txtPoppinsBold14
                                                           .copyWith(
-                                                        letterSpacing:
-                                                            getHorizontalSize(
-                                                                0.5),
+                                                        letterSpacing: getHorizontalSize(0.5),
                                                       ),
-                                                      underline: Container(
-                                                          height: 2,
+                                                      underline: Container(height: 2,
                                                           color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                    ),),],),
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
                                                   RichText(
                                                     text: TextSpan(
@@ -248,29 +220,18 @@ class _HomePageState extends State<Homepage> {
                                                           text: 'Select',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 14,
-                                                            letterSpacing:
-                                                                getHorizontalSize(
-                                                                    0.5),
-                                                          ),
-                                                        ),
+                                                            letterSpacing: getHorizontalSize(0.5),
+                                                          ),),
                                                         TextSpan(
                                                           text: ' Section',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 14,
-                                                            letterSpacing:
-                                                                getHorizontalSize(
-                                                                    0.5),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                                            letterSpacing: getHorizontalSize(0.5),
+                                                          ),),],),),
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         top: 1, bottom: 1),
@@ -278,72 +239,45 @@ class _HomePageState extends State<Homepage> {
                                                         DropdownButton<String>(
                                                       hint: Text('A'.tr),
                                                       value: _selectedSection,
-                                                      onChanged:
-                                                          (String? value) {
+                                                      onChanged: (String? value) {
                                                         setState(() {
-                                                          _selectedSection =
-                                                              value;
-                                                        });
-                                                      },
+                                                          _selectedSection = value;
+                                                        });},
                                                       items: <String>[
                                                         'A',
                                                         'B',
                                                         'C',
                                                         'D'
                                                       ].map<
-                                                              DropdownMenuItem<
-                                                                  String>>(
+                                                              DropdownMenuItem<String>>(
                                                           (String value) {
-                                                        return DropdownMenuItem<
-                                                            String>(
+                                                        return DropdownMenuItem<String>(
                                                           value: value,
-                                                          child: Text(
-                                                            value,
+                                                          child: Text(value,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .black54, // set the color of the dropdown items to black
-                                                            ),
-                                                          ),
-                                                        );
+                                                              color: Colors.black54, // set the color of the dropdown items to black
+                                                            ),),);
                                                       }).toList(),
                                                       focusNode: FocusNode(),
-                                                      icon: Icon(Icons
-                                                          .arrow_drop_down),
-                                                      iconEnabledColor:
-                                                          Colors.black,
-                                                      iconDisabledColor:
-                                                          Colors.grey,
+                                                      icon: Icon(Icons.arrow_drop_down),
+                                                      iconEnabledColor: Colors.black,
+                                                      iconDisabledColor: Colors.grey,
                                                       iconSize: 26,
-                                                      style: AppStyle
-                                                          .txtPoppinsBold14
+                                                      style: AppStyle.txtPoppinsBold14
                                                           .copyWith(
-                                                              letterSpacing:
-                                                                  getHorizontalSize(
-                                                                      0.5)),
+                                                              letterSpacing: getHorizontalSize(0.5)),
                                                       underline: Container(
                                                           height: 2,
                                                           color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                                    ),),],),],),),),
                                       Container(
                                         margin: getMargin(left: 23, right: 23),
                                         child: Padding(
                                           padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 1,
-                                              bottom: 1),
+                                              left: 10, right: 10, top: 1, bottom: 1),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: <Widget>[
                                               RichText(
                                                 text: TextSpan(
@@ -352,156 +286,126 @@ class _HomePageState extends State<Homepage> {
                                                       text: 'Select',
                                                       style: TextStyle(
                                                         color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                         fontSize: 14,
-                                                        letterSpacing:
-                                                            getHorizontalSize(
-                                                                0.5),
+                                                        letterSpacing: getHorizontalSize(0.5),
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: ' Subject',
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                         fontSize: 14,
-                                                        letterSpacing:
-                                                            getHorizontalSize(
-                                                                0.5),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(),
-                                                child: DropdownButton<String>(
-                                                  hint: Text(
-                                                      'Software Testing'.tr),
-                                                  value: _selectedSubject,
-                                                  onChanged: (String? value) {
-                                                    setState(() {
-                                                      _selectedSubject = value!;
-                                                    });
-                                                  },
-                                                  items: <String>[
-                                                    'Software Testing',
-                                                    'Python',
-                                                    'Java',
-                                                    'C Programming Language',
-                                                    'C++ Programming Language'
-                                                  ].map<
-                                                          DropdownMenuItem<
-                                                              String>>(
-                                                      (String value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
-                                                      value: value,
-                                                      child: Text(
-                                                        value,
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .black54, // set the color of the dropdown items to black
+                                                        letterSpacing: getHorizontalSize(0.5),
+                                                      ),),],),),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(),
+                                                      child: DropdownButton<String>(
+                                                        hint: Text(
+                                                            'Software Testing'.tr),
+                                                        value: _selectedSubject,
+                                                        onChanged: (String? value) {
+                                                          setState(() {
+                                                            _selectedSubject = value!;
+                                                          });
+                                                        },
+                                                        items: <String>[
+                                                          'Software Testing',
+                                                          'Python',
+                                                          'Java',
+                                                          'C Programming Language',
+                                                          'C++ Programming Language'
+                                                        ].map<
+                                                                DropdownMenuItem<String>>(
+                                                            (String value) {
+                                                          return DropdownMenuItem<String>(
+                                                            value: value,
+                                                            child: Text(value,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black54, // set the color of the dropdown items to black
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        focusNode: FocusNode(),
+                                                        icon: Icon(Icons.arrow_drop_down),
+                                                        iconEnabledColor: Colors.black,
+                                                        iconDisabledColor: Colors.grey,
+                                                        iconSize: 26,
+                                                        style: AppStyle.txtPoppinsBold14
+                                                            .copyWith(
+                                                          letterSpacing: getHorizontalSize(0.5),
+                                                        ),
+                                                        underline: Container(
+                                                            height: 2,
+                                                            color: Colors.black),),),],),),),
+                                                      Padding(
+                                                        padding: getPadding(top: 25,),
+                                                        child: Container(
+                                                          width: double.maxFinite,
+                                                          margin: getMargin(
+                                                            left: 8, right: 8, top: 8,),
+                                                          decoration: BoxDecoration(
+                                                            gradient: LinearGradient(
+                                                              colors: [
+                                                                Colors.white,
+                                                                Color(0xFFFFFFFF),
+                                                              ],
+                                                              begin: Alignment.topCenter,
+                                                              end: Alignment.bottomCenter,
+                                                            ),
+                                                            borderRadius: BorderRadiusStyle.roundedBorder25,
+                                                          ),
+                                                          child: CalendarDatePicker(
+                                                            initialDate: DateTime.now(),
+                                                            firstDate: DateTime(1000),
+                                                            lastDate: DateTime(3030),
+                                                            onDateChanged: (DateTime date) {
+
+                                                            },
+                                                          ),
+                                                          padding: getPadding(
+                                                            left: 7,
+                                                            top: 7,
+                                                            right: 7,
+                                                            bottom: 7,
+                                                          ),
                                                         ),
                                                       ),
-                                                    );
-                                                  }).toList(),
-                                                  focusNode: FocusNode(),
-                                                  icon: Icon(
-                                                      Icons.arrow_drop_down),
-                                                  iconEnabledColor:
-                                                      Colors.black,
-                                                  iconDisabledColor:
-                                                      Colors.grey,
-                                                  iconSize: 26,
-                                                  style: AppStyle
-                                                      .txtPoppinsBold14
-                                                      .copyWith(
-                                                    letterSpacing:
-                                                        getHorizontalSize(0.5),
+                                                      SizedBox(height: 5),
+                                                      ElevatedButton(
+                                                        onPressed: _selectedBranch != null &&
+                                                                _selectedSubject != null &&
+                                                                _selectedSection != null &&
+                                                                _selectedDate != null
+                                                            ? () => pickImage().then((value) {})
+                                                            : null,
+                                                        style: ButtonStyle(
+                                                          backgroundColor: MaterialStateProperty
+                                                              .resolveWith<Color>(
+                                                            (Set<MaterialState> states) {
+                                                              if (states.contains(
+                                                                  MaterialState.disabled)) {
+                                                                return Colors.black38;
+                                                              }
+                                                              return Colors.black;
+                                                            },
+                                                          ),
+                                                        ),
+                                                        child: Text(
+                                                          'Capture Attendance',
+                                                          style: TextStyle(
+                                                            fontSize: 17,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  underline: Container(
-                                                      height: 2,
-                                                      color: Colors.black),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: getPadding(
-                                          top: 25,
-                                        ),
-                                        child: Container(
-                                          width: double.maxFinite,
-                                          margin: getMargin(
-                                            left: 8,
-                                            right: 8,
-                                            top: 8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white,
-                                                Color(0xFFFFFFFF),
-                                              ],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                            ),
-                                            borderRadius: BorderRadiusStyle
-                                                .roundedBorder25,
-                                          ),
-                                          child: CalendarDatePicker(
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1000),
-                                            lastDate: DateTime(3030),
-                                            onDateChanged: (DateTime date) {
-                                              // Do something
-                                            },
-                                          ),
-                                          padding: getPadding(
-                                            left: 7,
-                                            top: 7,
-                                            right: 7,
-                                            bottom: 7,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 20),
-                                      ElevatedButton(
-                                        onPressed: _selectedBranch != null &&
-                                                _selectedSubject != null &&
-                                                _selectedSection != null &&
-                                                _selectedDate != null
-                                            ? () => pickImage().then((value) {})
-                                            : null,
-                                        style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty
-                                              .resolveWith<Color>(
-                                            (Set<MaterialState> states) {
-                                              if (states.contains(
-                                                  MaterialState.disabled)) {
-                                                return Colors.black38;
-                                              }
-                                              return Colors.black;
-                                            },
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'Capture Attendance',
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ]),
-                          ))
+                                                ]),
+                                          ))
                     ]))))));
   }
 }

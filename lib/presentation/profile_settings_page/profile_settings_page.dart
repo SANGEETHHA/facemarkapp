@@ -10,17 +10,23 @@ import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
 class ProfileSettingsPage extends StatelessWidget {
-  ProfileSettingsController controller =
-  Get.put(ProfileSettingsController(ProfileSettingsModel().obs));
+  ProfileSettingsController controller = Get.put(ProfileSettingsController(ProfileSettingsModel().obs));
 
+  Future<void> _signOut() async {
+    final response = await http.post(Uri.parse('http://facemark.me:8000/dj-rest-auth/logout/'));
+    if (response.statusCode == 204) {
+      Get.toNamed(AppRoutes.splashPageScreen);
+    } else {
+      throw Exception('Failed to sign out');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorConstant.teal300,
-        body:
-        SingleChildScrollView(
+        body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
     child: ConstrainedBox(
     constraints: BoxConstraints(
@@ -109,7 +115,7 @@ class ProfileSettingsPage extends StatelessWidget {
                               height: getVerticalSize(56),
                               text: "lbl_sign_out".tr,
                               margin: getMargin(left: 3, top: 56),
-                              onTap: onTapSignout,
+                              onTap: _signOut,
                             )
                           ],
                         ),
@@ -124,7 +130,4 @@ class ProfileSettingsPage extends StatelessWidget {
         Get.toNamed(AppRoutes.passwordChangePageScreen);
       }
 
-      onTapSignout() {
-        Get.toNamed(AppRoutes.splashPageScreen);
-      }
     }

@@ -28,7 +28,7 @@ class _SendAttendancePageScreenState extends State<SendAttendancePageScreen> {
   late Future<List<dynamic>> futureAttendance;
 
   Future<List<dynamic>> fetchAttendance() async {
-    final response = await http.get(Uri.parse('http://yourdjangoapi.com/send_mail_to_parent/'));
+    final response = await http.get(Uri.parse('http://facemark.me:8000/send_mail_to_parent/'));
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       List<dynamic> data = json.decode(response.body);
@@ -41,7 +41,7 @@ class _SendAttendancePageScreenState extends State<SendAttendancePageScreen> {
 
   Future<void> sendAttendance() async {
     final response = await http.post(
-      Uri.parse('http://lokie-codes-vigilant-potato-p556jrjw6xc9rq4-8000.preview.app.github.dev//send_mail_to_parent/'),
+      Uri.parse('http://facemark.me:8000/send_mail_to_parent/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -220,8 +220,8 @@ class _SendAttendancePageScreenState extends State<SendAttendancePageScreen> {
       case AppRoutes.homePage:
         return Homepage();
       case AppRoutes.imagePreviewPage:
-        var image;
-        return ImagePreviewPage(image: image);
+        var _image;
+        return ImagePreviewPage(image: _image);
          case AppRoutes.dashboardPageScreen:
         return DashboardPageScreen();
       case AppRoutes.profileSettingsPage:

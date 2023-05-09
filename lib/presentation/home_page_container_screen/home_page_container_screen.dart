@@ -47,8 +47,8 @@ class HomePageContainerScreen extends GetWidget<HomePageContainerController> {
       case AppRoutes.homePage:
         return Homepage();
       case AppRoutes.imagePreviewPage:
-        var image;
-        return ImagePreviewPage(image: image);
+        var _image;
+        return ImagePreviewPage(image: _image);
         case AppRoutes.dashboardPageScreen:
         return DashboardPageScreen();
       case AppRoutes.profileSettingsPage:

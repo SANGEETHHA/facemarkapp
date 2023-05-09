@@ -1,11 +1,10 @@
+import 'package:facemarkapp/presentation/attendance_page_screen/controller/attendance_page_controller.dart';
 import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
-import 'package:image_picker/image_picker.dart';
-import 'controller/image_preview_controller.dart';
-import 'models/image_preview_model.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
+import 'dart:ui';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -13,8 +12,7 @@ import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
 class ImagePreviewPage extends StatefulWidget {
-  final Image image;
-
+  final File image;
   const ImagePreviewPage({Key? key, required this.image}) : super(key: key);
 
   @override
@@ -22,9 +20,7 @@ class ImagePreviewPage extends StatefulWidget {
 }
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
-  late Image _image;
-
-  final picker = ImagePicker();
+  late File _image;
 
   @override
   void initState() {
@@ -32,21 +28,31 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
     _image = widget.image;
   }
 
-  Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  Future<void> sendImageToAPI() async {
+    String apiUrl = 'http://facemark.me:8000/face/recognise/';
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+      var pic = await http.MultipartFile.fromPath("image", _image.path);
+      request.files.add(pic);
+      var response = await request.send();
+      print("response code:");
+      print(response.statusCode);
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+      var jsonResponse = json.decode(responseString);
+      print(jsonResponse);
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = Image.file(File(pickedFile.path));
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImagePreviewPage(image: _image),
-          ),
-        );
-      });
+      List<String> usns = List<String>.from(jsonResponse['usns']);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AttendancePageScreen(usns: usns),
+        ),
+      );    } catch (e) {
+      print('Error: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,139 +60,102 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
         child: Scaffold(
             backgroundColor: ColorConstant.teal300,
             body: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-              child: ConstrainedBox(
-              constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width,
-              minHeight: MediaQuery.of(context).size.height,),
-              child: IntrinsicHeight(
-              child:Container(
-                height: getVerticalSize(752),
-                width: double.maxFinite,
-                decoration: AppDecoration.fillTeal300,
-                child: Stack(alignment: Alignment.center, children: [
-                  CustomImageView(
-                      imagePath: ImageConstant.imgImage2,
-                      height: getVerticalSize(839),
-                      width: getHorizontalSize(390),
-                      alignment: Alignment.center),
-                  Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                          padding: getPadding(top: 5),
+                physics: NeverScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width,
+                    minHeight: MediaQuery.of(context).size.height,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: AppDecoration.fillTeal300,
+                      child: Stack(alignment: Alignment.topCenter, children: [
+                        Align(
+                          alignment: Alignment.topCenter,
                           child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                    margin: getMargin(top: 45),
-                                    padding: getPadding(left: 19, right: 19),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          CustomIconButton(
-                                              height: 39, width: 39,
-                                              margin: getMargin(left: 1),
-                                              onTap: () {
-                                                onTapBtnArrowleft();
-                                              },
-                                              child: CustomImageView(
-                                                  svgPath: ImageConstant
-                                                      .imgArrowleftBlack90001)),
-
-                                          Padding(
-                                              padding: getPadding(top: 14),
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                    TextSpan(
-                                                        text: "lbl_select".tr,
-                                                        style: TextStyle(
-                                                            color: ColorConstant
-                                                                .black90001,
-                                                            fontSize:
-                                                            getFontSize(30),
-                                                            fontFamily:
-                                                            'Poppins',
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w700)),
-                                                    TextSpan(
-                                                        text: "lbl_image".tr,
-                                                        style: TextStyle(
-                                                            color: ColorConstant
-                                                                .whiteA700,
-                                                            fontSize:
-                                                            getFontSize(30),
-                                                            fontFamily:
-                                                            'Poppins',
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w700))
-                                                  ]),
-                                                  textAlign: TextAlign.left))
-                                        ])),
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(7.5), // add some padding
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 15.0), // add some margin
-                                      child: _image,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CustomIconButton(
+                                    height: 39,
+                                    width: 39,
+                                    margin: getMargin(left: 1),
+                                    onTap: onTapBtnArrowleft,
+                                    child: CustomImageView(
+                                      svgPath: ImageConstant.imgArrowleftBlack90001,
                                     ),
                                   ),
-                                ),
-                                Spacer()
-                              ]))
-                  ),
-                 ])))))));
+                                  SizedBox(width: 10), // Add a SizedBox widget with width of 10
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'lbl_select'.tr,
+                                          style: TextStyle(
+                                            color: ColorConstant.black90001,
+                                            fontSize: getFontSize(30),
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w700,
+                                          ),),
+                                        TextSpan(
+                                          text: 'lbl_image'.tr,
+                                          style: TextStyle(
+                                            color: ColorConstant.whiteA700,
+                                            fontSize: getFontSize(30),
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),],),
+                                    textAlign: TextAlign.left,
+                                  ),],),
+                              SizedBox(height: 10),
+                              Container(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(
+                                    _image,
+                                    height: MediaQuery.of(context).size.height * 0.75,
+                                    width: MediaQuery.of(context).size.width * 1.0, // Set the width to 80% of the screen width
+                                    fit: BoxFit.cover,
+                                  ),),),
+                              SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(width: 20),
+                                  ElevatedButton(
+                                    onPressed: onTapBtnRetry,
+                                    child: Text(
+                                      'Retry',
+                                      style: TextStyle(
+                                        backgroundColor: Colors.black,
+                                      ),),
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                                    ),),
+                                  SizedBox(width: 20),
+                                  ElevatedButton(
+                                    onPressed: sendImageToAPI,
+                                    child: Text(
+                                      'Send Image',
+                                      style: TextStyle(
+                                        backgroundColor: Colors.black,
+                                      ),),
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                                    ),),
+                                ],),
+                            ],),),]),),),))));
   }
 
   onTapBtnArrowleft() {
     Get.offAll(Homepage());
   }
 
-
   onTapBtnRetry() {
-    setState(() {
-      _image = Image.network('https://http://facemark.me:8000/path/to/image/image.jpg');
-    });
+    Navigator.pop(context);
   }
-
-  // onTapBtnOk() async {
-  //   if (_image != null) {
-  //     try {
-  //       final List usns =
-  //           await sendImage(File('path/to/image/image.jpg'), 'your_token_here');
-  //       setState(() {
-  //         _usns = usns;
-  //       });
-  //       Get.toNamed(AppRoutes.attendancePageScreen, arguments: _usns);
-  //     } catch (e) {
-  //       Get.snackbar('Error', 'Failed to send image: $e');
-  //     }
-  //   } else {
-  //     Get.snackbar('Error', 'Please capture an image first');
-  //   }
-  // }
-
-//   Future<List<dynamic>> sendImage(File imageFile, String token) async {
-//     final request = http.MultipartRequest(
-//       'POST',
-//       Uri.parse('http://facemark.me:8000/face/present/'),
-//     );
-//
-//     final file = await http.MultipartFile.fromPath('image', imageFile.path);
-//     request.files.add(file);
-//     request.headers.addAll(<String, String>{'Authorization': 'Token $token'});
-//
-//     final response = await request.send();
-//
-//     if (response.statusCode == 200) {
-//       final responseString = await response.stream.bytesToString();
-//       return json.decode(responseString);
-//     } else {
-//       throw Exception('Failed to send image');
-//     }
-//   }
- }
-
+}

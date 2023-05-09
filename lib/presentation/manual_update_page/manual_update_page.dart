@@ -33,7 +33,7 @@ class _ManualUpdatePageState extends State<ManualUpdatePage> {
   final status = _statusController.text;
 
   final response = await http.put(
-  Uri.parse('url/api/attendance/$usn/$date'),
+  Uri.parse('http://facemark.me:8000/api/attendance/$usn/$date'),
   headers: <String, String>{
   'Content-Type': 'application/json; charset=UTF-8',
   },
@@ -113,57 +113,30 @@ class _ManualUpdatePageState extends State<ManualUpdatePage> {
                                               text:
                                               "lbl_manual".tr,
                                               style: TextStyle(
-                                                  color: ColorConstant
-                                                      .black90001,
-                                                  fontSize:
-                                                  getFontSize(
-                                                      30),
-                                                  fontFamily:
-                                                  'Poppins',
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .w700,
-                                                  letterSpacing:
-                                                  getHorizontalSize(
-                                                      0.28))),
+                                                  color: ColorConstant.black90001,
+                                                  fontSize: getFontSize(30),
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: getHorizontalSize(0.28))),
                                           TextSpan(
                                               text: " ",
                                               style: TextStyle(
-                                                  color: ColorConstant
-                                                      .indigo900,
-                                                  fontSize:
-                                                  getFontSize(
-                                                      30),
-                                                  fontFamily:
-                                                  'Poppins',
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .w700,
-                                                  letterSpacing:
-                                                  getHorizontalSize(
-                                                      0.28))),
+                                                  color: ColorConstant.indigo900,
+                                                  fontSize: getFontSize(30),
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: getHorizontalSize(0.28))),
                                           TextSpan(
-                                              text:
-                                              "lbl_update".tr,
+                                              text: "lbl_update".tr,
                                               style: TextStyle(
-                                                  color: ColorConstant
-                                                      .whiteA700,
-                                                  fontSize:
-                                                  getFontSize(
-                                                      30),
-                                                  fontFamily:
-                                                  'Poppins',
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .w700,
-                                                  letterSpacing:
-                                                  getHorizontalSize(
-                                                      0.28)))
+                                                  color: ColorConstant.whiteA700,
+                                                  fontSize: getFontSize(30),
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: getHorizontalSize(0.28)))
                                         ]),
                                         textAlign:
                                         TextAlign.left)),
-
-
                                       Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
