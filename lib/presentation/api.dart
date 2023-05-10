@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 Future<List<dynamic>> getBranches() async {
-  final response = await http.get(Uri.parse('http://facemark.me:8000/api/branch/'));
+  final response = await http.get(Uri.parse('http://facemark.me/api/branch/'));
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {
@@ -11,7 +11,7 @@ Future<List<dynamic>> getBranches() async {
 }
 
 Future<List<dynamic>> getSubjects() async {
-  final response = await http.get(Uri.parse('http://facemark.me:8000/api/subject/'));
+  final response = await http.get(Uri.parse('http://facemark.me/api/subject/'));
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {
@@ -20,7 +20,7 @@ Future<List<dynamic>> getSubjects() async {
 }
 
 Future<List<dynamic>> getSections() async {
-  final response = await http.get(Uri.parse('http://facemark.me:8000/api/section/'));
+  final response = await http.get(Uri.parse('http://facemark.me/api/section/'));
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {

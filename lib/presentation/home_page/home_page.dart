@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:flutter/material.dart';
@@ -11,43 +10,135 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<Homepage> {
-  String? _selectedBranch;
-  String? _selectedSection;
-  late DateTime _selectedDate;
-  String? _selectedSubject;
- // late Image _image;
+   String? _selectedBranch;
+   String? _selectedSection;
+   String? _selectedSubject;
+   DateTime? _selectedDate;
 
-  _HomePageState() {
-    _selectedDate = DateTime.now();
+   List<String> branchName = [];
+   List<String> sections = [];
+   List<String> subjects = [];
+
+   Future<List<String>> fetchBranches() async {
+     final response = await http.get(Uri.parse('http://facemark.me/api/branch/'));
+     if (response.statusCode == 200) {
+       final data = json.decode(response.body);
+       List<String> branches = [];
+       for(var i=0; i<data.length; i++)
+       {
+         branches.add(data[i]["branchName"]);
+       }
+       return branches;
+     } else {
+       throw Exception('Failed to fetch branches');
+     }
+   }
+
+
+   Future<List<String>> fetchSubjects() async {
+     final response = await http.get(Uri.parse('http://facemark.me/api/subject/'));
+     if (response.statusCode == 200) {
+       final data = json.decode(response.body);
+       List<String> subjects = [];
+       for(var i=0; i<data.length; i++)
+       {
+         subjects.add(data[i]["subjectName"]);
+       }
+       return subjects;
+     } else {
+       throw Exception('Failed to fetch subjects');
+     }
+   }
+
+   Future<List<String>> fetchSections() async {
+     final response = await http.get(Uri.parse('http://facemark.me/api/section/'));
+     if (response.statusCode == 200) {
+       final data = json.decode(response.body);
+       List<String> sections = [];
+       for(var i=0; i<data.length; i++)
+       {
+         sections.add(data[i]["sectionName"]);
+       }
+       return sections;
+     } else {
+       throw Exception('Failed to fetch sections');
+     }
+   }
+
+
+   void _onBranchSelected(String? branch) {
+    setState(() {
+      _selectedBranch = branch;
+    });
   }
-  late File _imageFile;
-  final picker = ImagePicker();
 
-  @override
-  void initState() {
-    super.initState();
-    _imageFile = File('assets/images/default_image.jpg');
+  void _onSectionSelected(String? section) {
+    setState(() {
+      _selectedSection = section;
+    });
   }
 
-  Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  void _onSubjectSelected(String? subject) {
+    setState(() {
+      _selectedSubject = subject;
+    });
+  }
 
+  void _onDateSelected(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+    });
+  }
+
+   @override
+   void initState() {
+     super.initState();
+     fetchBranches().then((data) {
+       setState(() {
+         branchName = data;
+       });
+     }).catchError((error) {
+       print('Error fetching branches: $error');
+     });
+
+     fetchSections().then((data) {
+       setState(() {
+         sections = data;
+       });
+     }).catchError((error) {
+       print('Error fetching sections: $error');
+     });
+
+     fetchSubjects().then((data) {
+       setState(() {
+         subjects = data;
+       });
+     }).catchError((error) {
+       print('Error fetching subjects: $error');
+     });
+   }
+
+
+   void _onCaptureAttendancePressed() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ImagePreviewPage(image: _imageFile),
-          ),
-        );
-      });
+      // Navigate to ImagePreviewPage with the captured image
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImagePreviewPage(imagePath: pickedFile.path,branch: _selectedBranch!,
+        section: _selectedSection!,
+        subject: _selectedSubject!,
+        date: _selectedDate!,
+        ),
+        ),
+      );
     }
   }
 
@@ -125,303 +216,87 @@ class _HomePageState extends State<Homepage> {
                                       ),
                                     ],
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        margin: getMargin(
-                                          left: 5,
-                                          right: 5,
-                                        ),
-                                        child: Padding(
-                                          padding: getPadding(
-                                              right: 1.5,
-                                              left:
-                                                  1.5), // Add padding of 16 pixels on all sides
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  RichText(
-                                                    text: TextSpan(
-                                                      children: [
-                                                        TextSpan(
-                                                          text: 'Select',
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 14,
-                                                            letterSpacing: getHorizontalSize(0.5),
-                                                          ),
-                                                        ),
-                                                        TextSpan(
-                                                          text: ' Branch',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 14,
-                                                            letterSpacing: getHorizontalSize(0.5),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 1, bottom: 1),
-                                                    child:
-                                                        DropdownButton<String>(
-                                                      hint: Text(
-                                                          'Aeronautical Engineering'.tr),
-                                                      value: _selectedBranch,
-                                                      onChanged: (String? value) {
-                                                        setState(() {
-                                                          _selectedBranch = value;
-                                                        });
-                                                      },
-                                                      items: <String>[
-                                                        'Aeronautical Engineering',
-                                                        'Tool Engineering',
-                                                      ].map<
-                                                              DropdownMenuItem<String>>(
-                                                          (String value) {
-                                                        return DropdownMenuItem<String>(
-                                                          value: value,
-                                                          child: Text(value,
-                                                            style: TextStyle(
-                                                              color: Colors.black54, // set the color of the dropdown items to black
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                      focusNode: FocusNode(),
-                                                      icon: Icon(Icons.arrow_drop_down),
-                                                      iconEnabledColor: Colors.black,
-                                                      iconDisabledColor: Colors.grey,
-                                                      iconSize: 26, style: AppStyle.txtPoppinsBold14
-                                                          .copyWith(
-                                                        letterSpacing: getHorizontalSize(0.5),
-                                                      ),
-                                                      underline: Container(height: 2,
-                                                          color: Colors.black),
-                                                    ),),],),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  RichText(
-                                                    text: TextSpan(
-                                                      children: [
-                                                        TextSpan(
-                                                          text: 'Select',
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 14,
-                                                            letterSpacing: getHorizontalSize(0.5),
-                                                          ),),
-                                                        TextSpan(
-                                                          text: ' Section',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 14,
-                                                            letterSpacing: getHorizontalSize(0.5),
-                                                          ),),],),),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 1, bottom: 1),
-                                                    child:
-                                                        DropdownButton<String>(
-                                                      hint: Text('A'.tr),
-                                                      value: _selectedSection,
-                                                      onChanged: (String? value) {
-                                                        setState(() {
-                                                          _selectedSection = value;
-                                                        });},
-                                                      items: <String>[
-                                                        'A',
-                                                        'B',
-                                                        'C',
-                                                        'D'
-                                                      ].map<
-                                                              DropdownMenuItem<String>>(
-                                                          (String value) {
-                                                        return DropdownMenuItem<String>(
-                                                          value: value,
-                                                          child: Text(value,
-                                                            style: TextStyle(
-                                                              color: Colors.black54, // set the color of the dropdown items to black
-                                                            ),),);
-                                                      }).toList(),
-                                                      focusNode: FocusNode(),
-                                                      icon: Icon(Icons.arrow_drop_down),
-                                                      iconEnabledColor: Colors.black,
-                                                      iconDisabledColor: Colors.grey,
-                                                      iconSize: 26,
-                                                      style: AppStyle.txtPoppinsBold14
-                                                          .copyWith(
-                                                              letterSpacing: getHorizontalSize(0.5)),
-                                                      underline: Container(
-                                                          height: 2,
-                                                          color: Colors.black),
-                                                    ),),],),],),),),
-                                      Container(
-                                        margin: getMargin(left: 23, right: 23),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 10, right: 10, top: 1, bottom: 1),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              RichText(
-                                                text: TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Select',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                        letterSpacing: getHorizontalSize(0.5),
-                                                      ),
-                                                    ),
-                                                    TextSpan(
-                                                      text: ' Subject',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                        letterSpacing: getHorizontalSize(0.5),
-                                                      ),),],),),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(),
-                                                      child: DropdownButton<String>(
-                                                        hint: Text(
-                                                            'Software Testing'.tr),
-                                                        value: _selectedSubject,
-                                                        onChanged: (String? value) {
-                                                          setState(() {
-                                                            _selectedSubject = value!;
-                                                          });
-                                                        },
-                                                        items: <String>[
-                                                          'Software Testing',
-                                                          'Python',
-                                                          'Java',
-                                                          'C Programming Language',
-                                                          'C++ Programming Language'
-                                                        ].map<
-                                                                DropdownMenuItem<String>>(
-                                                            (String value) {
-                                                          return DropdownMenuItem<String>(
-                                                            value: value,
-                                                            child: Text(value,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black54, // set the color of the dropdown items to black
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                        focusNode: FocusNode(),
-                                                        icon: Icon(Icons.arrow_drop_down),
-                                                        iconEnabledColor: Colors.black,
-                                                        iconDisabledColor: Colors.grey,
-                                                        iconSize: 26,
-                                                        style: AppStyle.txtPoppinsBold14
-                                                            .copyWith(
-                                                          letterSpacing: getHorizontalSize(0.5),
-                                                        ),
-                                                        underline: Container(
-                                                            height: 2,
-                                                            color: Colors.black),),),],),),),
-                                                      Padding(
-                                                        padding: getPadding(top: 25,),
-                                                        child: Container(
-                                                          width: double.maxFinite,
-                                                          margin: getMargin(
-                                                            left: 8, right: 8, top: 8,),
-                                                          decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                              colors: [
-                                                                Colors.white,
-                                                                Color(0xFFFFFFFF),
-                                                              ],
-                                                              begin: Alignment.topCenter,
-                                                              end: Alignment.bottomCenter,
-                                                            ),
-                                                            borderRadius: BorderRadiusStyle.roundedBorder25,
-                                                          ),
-                                                          child: CalendarDatePicker(
-                                                            initialDate: DateTime.now(),
-                                                            firstDate: DateTime(1000),
-                                                            lastDate: DateTime(3030),
-                                                            onDateChanged: (DateTime date) {
 
-                                                            },
-                                                          ),
-                                                          padding: getPadding(
-                                                            left: 7,
-                                                            top: 7,
-                                                            right: 7,
-                                                            bottom: 7,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      ElevatedButton(
-                                                        onPressed: _selectedBranch != null &&
-                                                                _selectedSubject != null &&
-                                                                _selectedSection != null &&
-                                                                _selectedDate != null
-                                                            ? () => pickImage().then((value) {})
-                                                            : null,
-                                                        style: ButtonStyle(
-                                                          backgroundColor: MaterialStateProperty
-                                                              .resolveWith<Color>(
-                                                            (Set<MaterialState> states) {
-                                                              if (states.contains(
-                                                                  MaterialState.disabled)) {
-                                                                return Colors.black38;
-                                                              }
-                                                              return Colors.black;
-                                                            },
-                                                          ),
-                                                        ),
-                                                        child: Text(
-                                                          'Capture Attendance',
-                                                          style: TextStyle(
-                                                            fontSize: 17,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ]),
-                                          ))
-                    ]))))));
+                                  DropdownButton<String>(
+                                    value: _selectedBranch,
+                                    hint: Text('Select Branch'),
+                                    onChanged: _onBranchSelected,
+                                    items: branchName
+                                        .map((branch) => DropdownMenuItem(
+                                      value: branch,
+                                      child: Text(branch),
+                                    ))
+                                        .toList(),
+                                  ),
+                                  SizedBox(height: 16.0),
+                                  DropdownButton<String>(
+                                    value: _selectedSection,
+                                    hint: Text('Select Section'),
+                                    onChanged: _onSectionSelected,
+                                    items: sections
+                                        .map((section) => DropdownMenuItem(
+                                      value: section,
+                                      child: Text(section),
+                                    ))
+                                        .toList(),
+                                  ),
+                                  SizedBox(height: 16.0),
+                                  DropdownButton<String>(
+                                    value: _selectedSubject,
+                                    hint: Text('Select Subject'),
+                                    onChanged: _onSubjectSelected,
+                                    items: subjects
+                                        .map((subject) => DropdownMenuItem(
+                                      value: subject,
+                                      child: Text(subject),
+                                    ))
+                                        .toList(),
+                                  ),
+
+                                  SizedBox(height: 16.0),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      DateTime? date = await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2020),
+                                          lastDate: DateTime(2030));
+                                      if (date != null) {
+                                        _onDateSelected(date);
+                                      }
+                                      },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom:
+                                              BorderSide(width: 1.0, color: Colors.grey))),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            _selectedDate == null
+                                                ? 'Select Date'
+                                                : _selectedDate.toString().substring(0, 10),
+                                            style: TextStyle(fontSize: 16.0),
+                                          ),
+                                          Icon(Icons.calendar_today),
+                                        ],),),
+                                  ),
+                          SizedBox(height: 10.0),
+
+                      ElevatedButton(
+                        onPressed: _canCaptureAttendance() ? _onCaptureAttendancePressed : null,
+                          child: Text('Capture Attendance'), )]),),),
+
+                              ]),))),
+                    ));
   }
+   bool _canCaptureAttendance() {
+     return _selectedBranch != null &&
+         _selectedSubject != null &&
+         _selectedSection != null &&
+         _selectedDate != null;
+   }
 }
 
-class MyRaisedButton extends StatelessWidget {
-  final String buttonText;
-  final VoidCallback? onPressed;
-
-  const MyRaisedButton({Key? key, required this.buttonText, this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: Text(buttonText),
-      onPressed: onPressed,
-    );
-  }
-}

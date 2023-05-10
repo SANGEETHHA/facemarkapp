@@ -16,48 +16,43 @@ import 'package:facemarkapp/presentation/api.dart';
 
 class AttendancePageScreen extends StatefulWidget {
 
- const AttendancePageScreen({
-     required List<String> usns,
+  final String branch;
+  final String section;
+  final String subject;
+  final DateTime date;
+  final List<String> usns = [];
+
+  AttendancePageScreen({
+   required this.branch,
+   required this.section,
+   required this.subject,
+   required this.date,
+  // required this.usns,
+
   });
 
   @override
   _AttendancePageScreenState createState() => _AttendancePageScreenState();
 }
 
-class _AttendancePageScreenState extends State<AttendancePageScreen> {
-  // List<dynamic> branches = [];
-  // List<dynamic> subjects = [];
-  // List<dynamic> sections = [];
-   late List<dynamic> usns;
 
-  final AttendancePageController _attendancePageController = AttendancePageController();
+class _AttendancePageScreenState extends State<AttendancePageScreen> {
+  List<String> usns = [];
 
   @override
   void initState() {
     super.initState();
-    usns = [];
-    // getBranches().then((value) {
-    //   setState(() {
-    //     branches = value;
-    //   });
-    // });
-    // getSubjects().then((value) {
-    //   setState(() {
-    //     subjects = value;
-    //   });
-    // });
-    // getSections().then((value) {
-    //   setState(() {
-    //     sections = value;
-    //   });
-    // });
-
+    // Initialize the 'usns' list with the values passed through the constructor
+    usns = widget.usns;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
+    final branch = widget.branch;
+    final section = widget.section;
+    final subject = widget.subject;
+    final date = widget.date;
+
     return SafeArea(
         child: Scaffold(
             extendBody: true,
@@ -102,25 +97,22 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
                                   style: AppStyle.txtPoppinsBold30)),
+                          Text('Branch: $branch'),
+                          Text('Section: $section'),
+                          Text('Subject: $subject'),
+                          Text('Date: ${date?.toString()}'),
                           Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  ' Students Present:',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(
-                                  spacing: 10,
-                                  children: [
-                                    for (var usn in usns)
-                                      Chip(
-                                        label: Text(usn),
-                                      ),
-                                  ],
-                                ),
+                            child: DataTable(
+                              columns: [
+                                DataColumn(label: Text('USN')),
+                                DataColumn(label: Text('Status')),
                               ],
+                              rows: usns
+                                  .map((usn) => DataRow(cells: [
+                                DataCell(Text(usn)),
+                                DataCell(Icon(Icons.check_circle)),
+                              ]))
+                                  .toList(),
                             ),
                           ),
 

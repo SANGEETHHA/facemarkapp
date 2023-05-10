@@ -4,36 +4,50 @@ import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:facemarkapp/routes/app_routes.dart';
+import 'package:get/get.dart';
+import 'package:facemarkapp/presentation/password_change_page_screen/password_change_page_screen.dart';
 
 // ignore_for_file: must_be_immutable
 class ProfileSettingsPage extends StatelessWidget {
+
   ProfileSettingsController controller = Get.put(ProfileSettingsController(ProfileSettingsModel().obs));
 
-  Future<void> _signOut() async {
-    final response = await http.post(Uri.parse('http://facemark.me:8000/dj-rest-auth/logout/'));
-    if (response.statusCode == 204) {
-      Get.toNamed(AppRoutes.splashPageScreen);
-    } else {
-      throw Exception('Failed to sign out');
+  onTapSignOut() async {
+    try {
+      final response = await http.post(Uri.parse('http://facemark.me/dj-rest-auth/logout/'));
+      if (response.statusCode == 200) {
+        Get.offNamed(AppRoutes.signInPageScreen);
+      } else {
+        // Handle error, show a toast message or an error dialog
+      }
+    } catch (e) {
+      // Handle error, show a toast message or an error dialog
     }
   }
+
+  void onTapChangePassword(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PasswordChangePageScreen()),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+        child: Scaffold(
         backgroundColor: ColorConstant.teal300,
         body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-    child: ConstrainedBox(
-    constraints: BoxConstraints(
-    minWidth: MediaQuery.of(context).size.width,
-    minHeight: MediaQuery.of(context).size.height,
-    ),
-    child: IntrinsicHeight(
+        child: ConstrainedBox(
+        constraints: BoxConstraints(
+            minWidth: MediaQuery.of(context).size.width,
+            minHeight: MediaQuery.of(context).size.height,
+        ),
+        child: IntrinsicHeight(
         child: Container(
           height: getVerticalSize(752),
           width: double.maxFinite,
@@ -107,16 +121,18 @@ class ProfileSettingsPage extends StatelessWidget {
 
                             CustomButton(
                               height: getVerticalSize(56),
-                              text: "lbl_change_password".tr,
-                              margin: getMargin(left: 3, top: 56),
-                              onTap: onTapChangepassword,
+                              text: "Change Password",
+                              margin: getMargin(left: 1, top: 54, bottom: 40),
+                              fontStyle: ButtonFontStyle.InterSemiBold16,
+                              onTap: () => onTapChangePassword(context),
                             ),
                             CustomButton(
                               height: getVerticalSize(56),
                               text: "lbl_sign_out".tr,
                               margin: getMargin(left: 3, top: 56),
-                              onTap: _signOut,
-                            )
+                              onTap: onTapSignOut,
+                            ),
+
                           ],
                         ),
                       ),),],),),],),),),))));
@@ -124,10 +140,6 @@ class ProfileSettingsPage extends StatelessWidget {
 
       onTapBtnArrowleft() {
         Get.back();
-      }
-
-      onTapChangepassword() {
-        Get.toNamed(AppRoutes.passwordChangePageScreen);
       }
 
     }

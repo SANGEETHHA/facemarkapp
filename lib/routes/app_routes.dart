@@ -32,6 +32,11 @@ class AppRoutes {
   static const String imagePreviewPage = '/image_preview_page';
 
   static const String attendancePageScreen = '/attendance_page_screen';
+  static String? _selectedBranch;
+  static String? _selectedSection;
+  static String? _selectedSubject;
+  static DateTime? _selectedDate;
+  static List<String> usns = [];
 
   static const String manualUpdatePage = '/manual_update_page';
 
@@ -74,19 +79,25 @@ class AppRoutes {
       ],
     ),
     GetPage(
+
       name: attendancePageScreen,
-      page: () =>  AttendancePageScreen(usns: ['usns'],),
+      page: () =>  AttendancePageScreen(
+        branch: _selectedBranch!,
+        section: _selectedSection!,
+        subject: _selectedSubject!,
+        date: _selectedDate!,
+      ),
       bindings: [
         AttendancePageBinding(),
       ],
     ),
-    GetPage(
-      name: attendanceGraphPageScreen,
-      page: () => AttendanceGraphPageScreen(),
-      bindings: [
-        AttendanceGraphPageBinding(),
-      ],
-    ),
+    // GetPage(
+    //   name: attendanceGraphPageScreen,
+    //   page: () => AttendanceGraphPageScreen(),
+    //   bindings: [
+    //     AttendanceGraphPageBinding(),
+    //   ],
+    // ),
     GetPage(
       name: passwordChangePageScreen,
       page: () => PasswordChangePageScreen(),
@@ -101,20 +112,20 @@ class AppRoutes {
         DashboardPageBinding(),
       ],
     ),
-    GetPage(
-      name: sendAttendancePageScreen,
-      page: () => SendAttendancePageScreen(),
-      bindings: [
-        SendAttendancePageBinding(),
-      ],
-    ),
-    GetPage(
-      name: attendanceUpdatePageScreen,
-      page: () => AttendanceUpdatePageScreen(),
-      bindings: [
-        AttendanceUpdatePageBinding(),
-      ],
-    ),
+    // GetPage(
+    //   name: sendAttendancePageScreen,
+    //   page: () => SendAttendancePageScreen(),
+    //   bindings: [
+    //     SendAttendancePageBinding(),
+    //   ],
+    // ),
+    // GetPage(
+    //   name: attendanceUpdatePageScreen,
+    //   page: () => AttendanceUpdatePageScreen(),
+    //   bindings: [
+    //     AttendanceUpdatePageBinding(),
+    //   ],
+    // ),
     GetPage(
       name: appNavigationScreen,
       page: () => AppNavigationScreen(),

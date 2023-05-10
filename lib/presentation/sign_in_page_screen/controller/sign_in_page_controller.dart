@@ -3,6 +3,8 @@ import 'package:facemarkapp/presentation/sign_in_page_screen/models/sign_in_page
 import 'package:flutter/material.dart';
 
 class SignInPageController extends GetxController {
+  TextEditingController usernameController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
@@ -19,6 +21,7 @@ class SignInPageController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
   }

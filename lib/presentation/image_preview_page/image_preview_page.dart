@@ -1,55 +1,117 @@
-import 'package:facemarkapp/presentation/attendance_page_screen/controller/attendance_page_controller.dart';
+//import 'package:facemarkapp/presentation/attendance_page_screen/controller/attendance_page_controller.dart';
 import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
+//import 'package:facemarkapp/presentation/home_page/controller/home_controller.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
 import 'dart:ui';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
 class ImagePreviewPage extends StatefulWidget {
-  final File image;
-  const ImagePreviewPage({Key? key, required this.image}) : super(key: key);
+  final String imagePath;
+  final String branch;
+  final String section;
+  final String subject;
+  final DateTime date;
+
+  const ImagePreviewPage({Key? key, required this.imagePath,
+  required this.branch,
+  required this.section,
+  required this.subject,
+  required this.date,
+  // required this.usns,
+  }) : super(key: key);
 
   @override
   _ImagePreviewPageState createState() => _ImagePreviewPageState();
 }
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
-  late File _image;
 
-  @override
-  void initState() {
-    super.initState();
-    _image = widget.image;
-  }
+  late String _selectedBranch;
+  late String _selectedSection;
+  late String _selectedSubject;
+  late DateTime _selectedDate;
 
-  Future<void> sendImageToAPI() async {
-    String apiUrl = 'http://facemark.me:8000/face/recognise/';
+  void _onSendImagePressed() async {
+    final apiUrl = Uri.parse('http://facemark.me/face/recognise/');
+    final imageFile = File(widget.imagePath);
+    final request = http.MultipartRequest('POST', apiUrl)
+      ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
     try {
-      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
-      var pic = await http.MultipartFile.fromPath("image", _image.path);
-      request.files.add(pic);
-      var response = await request.send();
-      print("response code:");
-      print(response.statusCode);
-      var responseData = await response.stream.toBytes();
-      var responseString = String.fromCharCodes(responseData);
-      var jsonResponse = json.decode(responseString);
-      print(jsonResponse);
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      print('API Response Status Code: ${response.statusCode}');
+      print('API Response Body: ${response.body}');
 
-      List<String> usns = List<String>.from(jsonResponse['usns']);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => AttendancePageScreen(usns: usns),
+      if (response.statusCode == 200) {
+        final usns = json.decode(response.body)?['result'];
+        if (usns != null) {
+          final usnList = List<String>.from(usns);
+          print('Recognized USNs: $usnList');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttendancePageScreen(
+                branch: _selectedBranch,
+                section: _selectedSection,
+                subject: _selectedSubject,
+                date: _selectedDate,
+                //usns: usns,
+              ),
+            ),
+          );
+        } else {
+          // Handle case where 'usns' is null
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Error'),
+              content: Text('Failed to recognize faces. Please try again.'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to recognize faces. Please try again.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to send image. Please try again.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
         ),
-      );    } catch (e) {
-      print('Error: $e');
+      );
     }
   }
 
@@ -116,9 +178,9 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.file(
-                                    _image,
-                                    height: MediaQuery.of(context).size.height * 0.75,
-                                    width: MediaQuery.of(context).size.width * 1.0, // Set the width to 80% of the screen width
+                                    File(widget.imagePath),
+                                    height: 300,
+                                    width: 300,
                                     fit: BoxFit.cover,
                                   ),),),
                               SizedBox(height: 5),
@@ -138,21 +200,23 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                                     ),),
                                   SizedBox(width: 20),
                                   ElevatedButton(
-                                    onPressed: sendImageToAPI,
-                                    child: Text(
-                                      'Send Image',
-                                      style: TextStyle(
-                                        backgroundColor: Colors.black,
-                                      ),),
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                                    ),),
+                                    onPressed: _onSendImagePressed,
+                                    child: Text('Send Image'),
+                                  ),
                                 ],),
+                              ElevatedButton(
+                                onPressed:onTapAttendancePage ,
+                                child: Text('Attendance page'),
+                              ),
                             ],),),]),),),))));
   }
 
   onTapBtnArrowleft() {
     Get.offAll(Homepage());
+  }
+
+  onTapAttendancePage() {
+    Get.toNamed(AppRoutes.attendancePageScreen);
   }
 
   onTapBtnRetry() {
