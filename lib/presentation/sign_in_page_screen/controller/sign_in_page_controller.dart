@@ -8,11 +8,6 @@ class SignInPageController extends GetxController {
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
-  TextEditingController currentPasswordController = TextEditingController();
-
-  TextEditingController newPasswordController = TextEditingController();
-
-  TextEditingController confirmPasswordController = TextEditingController();
 
   Rx<SignInPageModel> signInPageModelObj = SignInPageModel().obs;
 

@@ -694,10 +694,10 @@ class AttendanceUpdatePageScreen
         String _selectedSection = "";
         String _selectedSubject = "";
         DateTime _selectedDate= DateTime.now();
-        return ImagePreviewPage(imagePath: pickedFile.path,branch: _selectedBranch!,
-            section: _selectedSection!,
-            subject: _selectedSubject!,
-            date: _selectedDate!);
+        return ImagePreviewPage(imagePath: pickedFile.path,branch: _selectedBranch,
+            section: _selectedSection,
+            subject: _selectedSubject,
+            date: _selectedDate);
       case AppRoutes.dashboardPageScreen:
         return DashboardPageScreen();
       case AppRoutes.profileSettingsPage:

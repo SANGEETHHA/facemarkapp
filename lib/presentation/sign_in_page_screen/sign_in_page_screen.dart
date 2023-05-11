@@ -268,29 +268,29 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
   }
 
   onTapLogin() async {
-    Get.offNamed(AppRoutes.homePageContainerScreen);
-  //
-  //   if (_formKey.currentState!.validate()) {
-  //     try {
-  //       Map<String, dynamic> responseData = await loginUser(
-  //         _signInPageController.usernameController.text.trim(),
-  //         _signInPageController.emailController.text.trim(),
-  //         _signInPageController.passwordController.text.trim(),
-  //
-  //       );
-  //       // save the user token to local storage or state management
-  //       String? token  = responseData['key'];
-  //       if (token != null) {
-  //         // navigate to home screen
-  //         Get.offNamed(AppRoutes.homePageContainerScreen);
-  //       } else {
-  //         throw Exception('Failed to get token');
-  //       }
-  //     } catch (e) {
-  //       Get.snackbar('Error', e.toString(),
-  //           backgroundColor: ColorConstant.redA700);
-  //     }
-  //   }
+   // Get.offNamed(AppRoutes.homePageContainerScreen);
+
+    if (_formKey.currentState!.validate()) {
+      try {
+        Map<String, dynamic> responseData = await loginUser(
+          _signInPageController.usernameController.text.trim(),
+          _signInPageController.emailController.text.trim(),
+          _signInPageController.passwordController.text.trim(),
+
+        );
+        // save the user token to local storage or state management
+        String? token  = responseData['key'];
+        if (token != null) {
+          // navigate to home screen
+          Get.offNamed(AppRoutes.homePageContainerScreen);
+        } else {
+          throw Exception('Failed to get token');
+        }
+      } catch (e) {
+        Get.snackbar('Error', e.toString(),
+            backgroundColor: ColorConstant.redA700);
+      }
+    }
 
 
    }

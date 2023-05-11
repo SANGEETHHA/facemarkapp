@@ -315,15 +315,6 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
     Get.offAll(Homepage());
   }
 
-  // @override
-  // void initState() {
-  //   print("INIT CALLLED");
-  //   super.initState();
-  //   print("IMAGE PREVIEW BOX -------");
-  //   print(_selectedBranch);
-  //   this._selectedBranch = _selectedBranch;
-  // }
-
   onTapBtnRetry() {
     Navigator.pop(context);
   }

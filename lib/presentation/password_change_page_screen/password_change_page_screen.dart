@@ -1,18 +1,15 @@
-import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/presentation/dashboard_page_screen/dashboard_page_screen.dart';
 import 'controller/password_change_page_controller.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/core/utils/validation_functions.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
-import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
 import 'package:facemarkapp/presentation/profile_settings_page/profile_settings_page.dart';
 import 'package:facemarkapp/widgets/custom_bottom_bar.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:facemarkapp/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // ignore_for_file: must_be_immutable
@@ -259,7 +256,7 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
                                                 height: getVerticalSize(56),
                                                 text: "lbl_save".tr,
                                                 margin: getMargin(left: 1, top: 49),
-                                                onTap: onTapSave,
+                                                onTap: onTapSavePassword,
                                               ),
                                             ])),
                                     Spacer()
@@ -309,9 +306,9 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
     }
   }
 
-  // onTapSave() {
-  //   Get.toNamed(AppRoutes.profileSettingsPage);
-  // }
+  onTapSavePassword() {
+    Get.toNamed(AppRoutes.profileSettingsPage);
+  }
 
   onTapBtnArrowleft() {
     Get.back();

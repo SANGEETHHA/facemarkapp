@@ -1,18 +1,13 @@
-import 'dart:ui';
 import 'package:facemarkapp/presentation/attendance_graph_page_screen/attendance_graph_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
 import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
-import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:facemarkapp/presentation/api.dart';
-
+import 'dart:ui';
 
 class AttendancePageScreen extends StatefulWidget {
 
@@ -34,7 +29,6 @@ class AttendancePageScreen extends StatefulWidget {
   _AttendancePageScreenState createState() => _AttendancePageScreenState();
 }
 
-
 class _AttendancePageScreenState extends State<AttendancePageScreen> {
   List<String> usns = [];
 
@@ -43,7 +37,6 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
     super.initState();
     usns = widget.usns;
   }
-
 
   @override
   Widget build(BuildContext context) {
