@@ -1,4 +1,5 @@
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
+import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/widgets/app_bar/appbar_image.dart';
@@ -6,7 +7,6 @@ import 'package:facemarkapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
@@ -16,12 +16,12 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomePageState extends State<Homepage> {
-   String? _selectedBranch;
-   String? _selectedSection;
-   String? _selectedSubject;
-   DateTime? _selectedDate;
+   late String _selectedBranch="";
+   late String _selectedSection="";
+   late String _selectedSubject="";
+   late DateTime _selectedDate=DateTime.now();
 
-   List<String> branchName = [];
+   List<String> branches = [];
    List<String> sections = [];
    List<String> subjects = [];
 
@@ -74,19 +74,21 @@ class _HomePageState extends State<Homepage> {
 
    void _onBranchSelected(String? branch) {
     setState(() {
-      _selectedBranch = branch;
+      print("Point-1");
+      _selectedBranch = branch!;
+      print(_selectedBranch);
     });
   }
 
   void _onSectionSelected(String? section) {
     setState(() {
-      _selectedSection = section;
+      _selectedSection = section!;
     });
   }
 
   void _onSubjectSelected(String? subject) {
     setState(() {
-      _selectedSubject = subject;
+      _selectedSubject = subject!;
     });
   }
 
@@ -98,11 +100,16 @@ class _HomePageState extends State<Homepage> {
 
    @override
    void initState() {
+     print("INIT CALLLED");
      super.initState();
      fetchBranches().then((data) {
+       print("-----------------------------");
+       print(data);
        setState(() {
-         branchName = data;
+         branches = data;
        });
+       print("Point-2");
+       _selectedBranch=data[0];
      }).catchError((error) {
        print('Error fetching branches: $error');
      });
@@ -111,6 +118,7 @@ class _HomePageState extends State<Homepage> {
        setState(() {
          sections = data;
        });
+       _selectedSection=data[0];
      }).catchError((error) {
        print('Error fetching sections: $error');
      });
@@ -119,6 +127,7 @@ class _HomePageState extends State<Homepage> {
        setState(() {
          subjects = data;
        });
+       _selectedSubject=data[0];
      }).catchError((error) {
        print('Error fetching subjects: $error');
      });
@@ -127,17 +136,28 @@ class _HomePageState extends State<Homepage> {
 
    void _onCaptureAttendancePressed() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    print("Point-3");
     if (pickedFile != null) {
       // Navigate to ImagePreviewPage with the captured image
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => ImagePreviewPage(imagePath: pickedFile.path,branch: _selectedBranch!,
-        section: _selectedSection!,
-        subject: _selectedSubject!,
-        date: _selectedDate!,
-        ),
-        ),
+        MaterialPageRoute(builder: (context) => ImagePreviewPage(
+              imagePath: pickedFile.path,
+        branch:_selectedBranch,
+        section:_selectedSection,
+        subject:_selectedSubject,
+        date:_selectedDate,
+          // usns: ['1VA19IS046','1VA19IS035','1VA19IS040'],
+        ))
+        // MaterialPageRoute(
+        //   builder: (context) => ImagePreviewPage(
+        //     imagePath: pickedFile.path,
+        //     branch: _selectedBranch  ,
+        //     section: _selectedSection ,
+        //     subject: _selectedSubject ,
+        //     date: _selectedDate,
+        // ),
+        //),
       );
     }
   }
@@ -221,8 +241,7 @@ class _HomePageState extends State<Homepage> {
                                     value: _selectedBranch,
                                     hint: Text('Select Branch'),
                                     onChanged: _onBranchSelected,
-                                    items: branchName
-                                        .map((branch) => DropdownMenuItem(
+                                    items: branches.map((branch) => DropdownMenuItem(
                                       value: branch,
                                       child: Text(branch),
                                     ))
@@ -233,8 +252,8 @@ class _HomePageState extends State<Homepage> {
                                     value: _selectedSection,
                                     hint: Text('Select Section'),
                                     onChanged: _onSectionSelected,
-                                    items: sections
-                                        .map((section) => DropdownMenuItem(
+                                    items: sections.map(
+                                            (section) => DropdownMenuItem(
                                       value: section,
                                       child: Text(section),
                                     ))
@@ -245,8 +264,7 @@ class _HomePageState extends State<Homepage> {
                                     value: _selectedSubject,
                                     hint: Text('Select Subject'),
                                     onChanged: _onSubjectSelected,
-                                    items: subjects
-                                        .map((subject) => DropdownMenuItem(
+                                    items: subjects.map((subject) => DropdownMenuItem(
                                       value: subject,
                                       child: Text(subject),
                                     ))
@@ -268,35 +286,36 @@ class _HomePageState extends State<Homepage> {
                                     child: Container(
                                       padding: EdgeInsets.symmetric(vertical: 8.0),
                                       decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom:
-                                              BorderSide(width: 1.0, color: Colors.grey))),
+                                        border: Border(
+                                          bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                        ),
+                                      ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            _selectedDate == null
-                                                ? 'Select Date'
-                                                : _selectedDate.toString().substring(0, 10),
+                                            _selectedDate.toString().substring(0, 10),
                                             style: TextStyle(fontSize: 16.0),
                                           ),
                                           Icon(Icons.calendar_today),
-                                        ],),),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                           SizedBox(height: 10.0),
 
                       ElevatedButton(
-                        onPressed: _canCaptureAttendance() ? _onCaptureAttendancePressed : null,
+                        onPressed:
+                        _onCaptureAttendancePressed ,
                           child: Text('Capture Attendance'), )]),),),
-
                               ]),))),
                     ));
   }
-   bool _canCaptureAttendance() {
-     return _selectedBranch != null &&
-         _selectedSubject != null &&
-         _selectedSection != null &&
-         _selectedDate != null;
-   }
+   // bool _canCaptureAttendance() {
+   //   return _selectedBranch != null &&
+   //       _selectedSubject != null &&
+   //       _selectedSection != null &&
+   //       _selectedDate != null;
+   // }
 }
 

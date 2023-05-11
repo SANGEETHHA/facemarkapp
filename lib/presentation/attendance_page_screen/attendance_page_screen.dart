@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'controller/attendance_page_controller.dart';
+import 'package:facemarkapp/presentation/attendance_graph_page_screen/attendance_graph_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
 import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
@@ -16,19 +16,18 @@ import 'package:facemarkapp/presentation/api.dart';
 
 class AttendancePageScreen extends StatefulWidget {
 
-  final String branch;
-  final String section;
-  final String subject;
-  final DateTime date;
-  final List<String> usns = [];
+  late String branch;
+  late String section;
+  late String subject;
+  late DateTime date;
+  List<String> usns = [];
 
   AttendancePageScreen({
    required this.branch,
    required this.section,
    required this.subject,
    required this.date,
-  // required this.usns,
-
+    required this.usns,
   });
 
   @override
@@ -42,9 +41,9 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the 'usns' list with the values passed through the constructor
     usns = widget.usns;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,20 +117,18 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
 
                           Align(
                               alignment: Alignment.center,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    onTapTxtButtonprimary();},
-                                  child: Container(
-
-                                      width: getHorizontalSize(129),
-                                      margin: getMargin(top: 26),
-                                      padding: getPadding(left: 12, top: 12, right: 12, bottom: 12),
-                                      decoration: AppDecoration.txtFillBlack900cc.copyWith(
-                                              borderRadius: BorderRadiusStyle.txtRoundedBorder10),
-                                      child: Text("lbl_save".tr,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: AppStyle.txtPoppinsBold14)))),
+                              child:
+                              ElevatedButton(
+                                onPressed: onTapSave,
+                                child: Text(
+                                  'Save',
+                                  style: TextStyle(
+                                    backgroundColor: Colors.black,
+                                  ),),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                                ),),
+                          ),
                           Container(
                               width: double.maxFinite,
                               child: Container(
@@ -195,7 +192,10 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
     Get.offAll(Homepage());
   }
 
-  onTapTxtButtonprimary() {
-    Get.toNamed(AppRoutes.attendanceGraphPageScreen);
+  onTapSave() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AttendanceGraphPageScreen(),
+    ));
   }
 }

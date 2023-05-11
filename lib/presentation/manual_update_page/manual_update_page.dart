@@ -104,8 +104,6 @@ class _ManualUpdatePageState extends State<ManualUpdatePage> {
                                         textAlign:
                                         TextAlign.left)),
 
-
-
                                    CustomButton(
                                       height: 56,
                                       text: "lbl_save".tr,
@@ -119,9 +117,6 @@ class _ManualUpdatePageState extends State<ManualUpdatePage> {
                       ),
                     ),
                   );
-
-
-
   }
 
   onTapBtnArrowleft() {

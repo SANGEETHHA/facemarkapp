@@ -2,6 +2,7 @@ import 'controller/sign_in_page_controller.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/core/utils/validation_functions.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
+import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:facemarkapp/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -267,29 +268,32 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
   }
 
   onTapLogin() async {
-  // Get.toNamed(AppRoutes.homePageContainerScreen);
-    if (_formKey.currentState!.validate()) {
-      try {
-        Map<String, dynamic> responseData = await loginUser(
-          _signInPageController.usernameController.text.trim(),
-          _signInPageController.emailController.text.trim(),
-          _signInPageController.passwordController.text.trim(),
+    Get.offNamed(AppRoutes.homePageContainerScreen);
+  //
+  //   if (_formKey.currentState!.validate()) {
+  //     try {
+  //       Map<String, dynamic> responseData = await loginUser(
+  //         _signInPageController.usernameController.text.trim(),
+  //         _signInPageController.emailController.text.trim(),
+  //         _signInPageController.passwordController.text.trim(),
+  //
+  //       );
+  //       // save the user token to local storage or state management
+  //       String? token  = responseData['key'];
+  //       if (token != null) {
+  //         // navigate to home screen
+  //         Get.offNamed(AppRoutes.homePageContainerScreen);
+  //       } else {
+  //         throw Exception('Failed to get token');
+  //       }
+  //     } catch (e) {
+  //       Get.snackbar('Error', e.toString(),
+  //           backgroundColor: ColorConstant.redA700);
+  //     }
+  //   }
 
-        );
-        // save the user token to local storage or state management
-        String? token  = responseData['key'];
-        if (token != null) {
-          // navigate to home screen
-          Get.offNamed(AppRoutes.homePageContainerScreen);
-        } else {
-          throw Exception('Failed to get token');
-        }
-      } catch (e) {
-        Get.snackbar('Error', e.toString(),
-            backgroundColor: ColorConstant.redA700);
-      }
-    }
-  }
+
+   }
 }
 
 
