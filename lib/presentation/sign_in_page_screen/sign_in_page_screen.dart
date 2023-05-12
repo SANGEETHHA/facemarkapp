@@ -2,7 +2,6 @@ import 'controller/sign_in_page_controller.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/core/utils/validation_functions.dart';
 import 'package:facemarkapp/widgets/custom_button.dart';
-import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:facemarkapp/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -42,23 +41,6 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
         'password': password,
       }),
     );
-
-    // if (response.statusCode == 200 ) {
-    //   Map<String, dynamic> responseData = json.decode(response.body);
-    //   // You can handle the response data here as required
-    //   print(responseData);
-    //   Get.toNamed(AppRoutes.homePageContainerScreen);
-    // } else if (response.statusCode == 400) {
-    //   Map<String, dynamic> errorData = json.decode(response.body);
-    //   if (errorData.containsKey('non_field_errors')) {
-    //     throw Exception(errorData['non_field_errors'][0]);
-    //   } else {
-    //     throw Exception('Invalid email or password');
-    //   }
-    // } else {
-    //   // Handle other status codes or errors
-    //   throw Exception('Failed to login user');
-    // }
 
     if (response.statusCode == 200) {
       dynamic responseData;
@@ -306,28 +288,28 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
   onTapLogin() async {
    Get.offNamed(AppRoutes.homePageContainerScreen);
 
-    // if (_formKey.currentState!.validate()) {
-    //   try {
-    //     Map<String, dynamic> responseData = await loginUser(
-    //       _signInPageController.usernameController.text.trim(),
-    //       _signInPageController.emailController.text.trim(),
-    //       _signInPageController.passwordController.text.trim(),
-    //
-    //     );
-    //     // save the user token to local storage or state management
-    //     String? token  = responseData['key'];
-    //     if (token != null) {
-    //       // navigate to home screen
-    //       Get.offNamed(AppRoutes.homePageContainerScreen);
-    //     } else {
-    //       throw Exception('Failed to get token');
-    //     }
-    //   } catch (e) {
-    //     Get.snackbar('Error', e.toString(),
-    //         backgroundColor: ColorConstant.redA700);
-    //   }
-    // }
-   }
+   //  if (_formKey.currentState!.validate()) {
+   //    try {
+   //      Map<String, dynamic> responseData = await loginUser(
+   //        _signInPageController.usernameController.text.trim(),
+   //        _signInPageController.emailController.text.trim(),
+   //        _signInPageController.passwordController.text.trim(),
+   //
+   //      );
+   //      // save the user token to local storage or state management
+   //      String? token  = responseData['key'];
+   //      if (token != null) {
+   //        // navigate to home screen
+   //        Get.offNamed(AppRoutes.homePageContainerScreen);
+   //      } else {
+   //        throw Exception('Failed to get token');
+   //      }
+   //    } catch (e) {
+   //      Get.snackbar('Error', e.toString(),
+   //          backgroundColor: ColorConstant.redA700);
+   //    }
+   //  }
+    }
 }
 
 

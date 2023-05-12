@@ -1,11 +1,8 @@
-//import 'package:facemarkapp/presentation/attendance_page_screen/controller/attendance_page_controller.dart';
 import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
-//import 'package:facemarkapp/presentation/home_page/controller/home_controller.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
-// import 'dart:ui';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -33,91 +30,6 @@ class ImagePreviewPage extends StatefulWidget {
 }
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
-
-  // late String _selectedBranch='';
-  // late String _selectedSection='';
-  // late String _selectedSubject='';
-  // late DateTime _selectedDate=DateTime.now();
-
-  // void _onSendImagePressed() async {
-  //   final apiUrl = Uri.parse('http://facemark.me/face/recognise/');
-  //   final imageFile = File(widget.imagePath);
-  //   final request = http.MultipartRequest('POST', apiUrl)
-  //     ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-  //   print("&&&&&&&&&");
-  //   print(request);
-  //   try {
-  //     final streamedResponse = await request.send();
-  //     final response = await http.Response.fromStream(streamedResponse);
-  //     print('API Response Status Code: ${response.statusCode}');
-  //     print('API Response Body: ${response.body}');
-  //     print(response);
-  //     if (response.statusCode == 200) {
-  //       final usns = json.decode(response.body)?['result'];
-  //       if (usns != null) {
-  //         final usnList = List<String>.from(usns);
-  //         print('Recognized USNs: $usnList');
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => AttendancePageScreen(
-  //               branch: _selectedBranch,
-  //               section: _selectedSection,
-  //               subject: _selectedSubject,
-  //               date: _selectedDate,
-  //                usns: usnList,
-  //                // usns: ['1VA19IS046','1VA19IS035','1VA19IS040'],
-  //             ),
-  //           ),
-  //         );
-  //       } else {
-  //         // Handle case where 'usns' is null
-  //         showDialog(
-  //           context: context,
-  //           builder: (context) => AlertDialog(
-  //             title: Text('Error'),
-  //             content: Text('Failed to recognize faces. Please try again.'),
-  //             actions: [
-  //               ElevatedButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 child: Text('OK'),
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       }
-  //     } else {
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) => AlertDialog(
-  //           title: Text('Error'),
-  //           content: Text('Failed to recognize faces. Please try again.'),
-  //           actions: [
-  //             ElevatedButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print('Exception occurred: $e');
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //         title: Text('Error'),
-  //         content: Text('Failed to send image. Please try again!!!!!!.'),
-  //         actions: [
-  //           ElevatedButton(
-  //             onPressed: () => Navigator.pop(context),
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
 
   void _onSendImagePressed() async {
     final apiUrl = Uri.parse('http://facemark.me/face/recognise/');

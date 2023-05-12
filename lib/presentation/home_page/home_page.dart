@@ -1,5 +1,4 @@
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
-import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
 import 'package:flutter/material.dart';
@@ -150,20 +149,13 @@ class _HomePageState extends State<Homepage> {
         date:_selectedDate,
           // usns: ['1VA19IS046','1VA19IS035','1VA19IS040'],
         ))
-        // MaterialPageRoute(
-        //   builder: (context) => ImagePreviewPage(
-        //     imagePath: pickedFile.path,
-        //     branch: _selectedBranch  ,
-        //     section: _selectedSection ,
-        //     subject: _selectedSubject ,
-        //     date: _selectedDate,
-        // ),
-        //),
       );
     }
   }
 
-  @override
+   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
@@ -176,9 +168,12 @@ class _HomePageState extends State<Homepage> {
                       minWidth: MediaQuery.of(context).size.width,
                       minHeight: MediaQuery.of(context).size.height,
                     ),
-                    child: IntrinsicHeight(
-                        child:
-                            Stack(alignment: Alignment.bottomCenter, children: [
+                     child: IntrinsicHeight(
+                     child:Form(
+                     key: _formKey,
+                     child:Stack(
+                     alignment: Alignment.bottomCenter,
+                     children: [
                       CustomImageView(
                           imagePath: ImageConstant.imgImage2,
                           height: getVerticalSize(850),
@@ -187,7 +182,7 @@ class _HomePageState extends State<Homepage> {
                       Align(
                           alignment: Alignment.topCenter,
                           child: Padding(
-                            padding: getPadding(top: 5),
+                            padding: getPadding(top: 10),
                             child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -238,99 +233,150 @@ class _HomePageState extends State<Homepage> {
                                     ],
                                   ),
 
-                                  DropdownButton<String>(
-                                    value: _selectedBranch,
-                                    hint: Text('Select Branch'),
-                                    onChanged: _onBranchSelected,
-                                    items: branches.map((branch) => DropdownMenuItem(
-                                      value: branch,
-                                      child: Text(branch),
-                                    ))
-                                        .toList(),
-                                  ),
-                                  SizedBox(height: 16.0),
-                                  DropdownButton<String>(
-                                    value: _selectedSection,
-                                    hint: Text('Select Section'),
-                                    onChanged: _onSectionSelected,
-                                    items: sections.map(
-                                            (section) => DropdownMenuItem(
-                                      value: section,
-                                      child: Text(section),
-                                    ))
-                                        .toList(),
-                                  ),
-                                  SizedBox(height: 16.0),
-                                  DropdownButton<String>(
-                                    value: _selectedSubject,
-                                    hint: Text('Select Subject'),
-                                    onChanged: _onSubjectSelected,
-                                    items: subjects.map((subject) => DropdownMenuItem(
-                                      value: subject,
-                                      child: Text(subject),
-                                    ))
-                                        .toList(),
-                                  ),
+                                  SizedBox(
+                                      height: 50.0, // Set the desired height
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: _selectedBranch,
+                                          hint: Text('Select Branch'),
+                                          onChanged: _onBranchSelected,
+                                          underline: Container(), // Remove the underline
+                                          items: branches.map((branch) => DropdownMenuItem(
+                                            value: branch,
+                                            child: Text(
+                                              branch,
+                                              style: TextStyle(fontSize: 14.5),
+                                            ),
+                                          )).toList(),
+                                        ),
+                                      )),
+                                  SizedBox(height: 10),
 
-                                  SizedBox(height: 16.0),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      DateTime? date = await showDatePicker(
+                                  SizedBox(
+                                    height: 50.0, // Set the desired height
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          canvasColor: Colors.white,
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: _selectedSection,
+                                          hint: Text('Select Section'),
+                                          onChanged: _onSectionSelected,
+                                          underline: Container(),
+                                          items: sections.map((section) => DropdownMenuItem(
+                                            value: section,
+                                            child: Text(
+                                              section,
+                                              style: TextStyle(fontSize: 16.0),
+                                            ),
+                                          )).toList(),
+                                        ),
+                                      ),
+                                    ),),
+                                  SizedBox(height: 10),
+
+                                  SizedBox(
+                                    height: 50.0, // Set the desired height
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        // border: Border.all(width: 1.0, color: Colors.grey),
+                                      ),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          canvasColor: Colors.white,
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: _selectedSubject,
+                                          hint: Text('Select Subject'),
+                                          onChanged: _onSubjectSelected,
+                                          underline: Container(),
+                                          items: subjects.map((subject) => DropdownMenuItem(
+                                            value: subject,
+                                            child: Text(
+                                              subject,
+                                              style: TextStyle(fontSize: 15.0),
+                                            ),
+                                          )).toList(),
+                                        ),
+                                      ),
+                                    ),),
+                                  SizedBox(height: 10),
+
+                                  SizedBox(
+                                    height: 50.0,
+                                    width: 345,// Set the desired height
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        DateTime? date = await showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
                                           firstDate: DateTime(2020),
-                                          lastDate: DateTime(2030));
-                                      if (date != null) {
-                                        _onDateSelected(date);
-                                      }
+                                          lastDate: DateTime(2030),
+                                        );
+                                        if (date != null) {
+                                          _onDateSelected(date);
+                                        }
                                       },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          // border: Border.all(width: 1.0, color: Colors.grey),
+                                        ),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                _selectedDate.toString().substring(0, 10),
+                                                style: TextStyle(fontSize: 16.0),
+                                              ),
+                                              Icon(Icons.calendar_today),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            _selectedDate.toString().substring(0, 10),
-                                            style: TextStyle(fontSize: 16.0),
-                                          ),
-                                          Icon(Icons.calendar_today),
-                                        ],
+                                    ),),
+                                  SizedBox(height: 20),
+
+
+                                  ElevatedButton(
+                                    onPressed: (_selectedBranch != null &&
+                                        _selectedSection != null &&
+                                        _selectedSubject != null &&
+                                        _selectedDate != null)
+                                        ? _onCaptureAttendancePressed
+                                        : null, // Set onPressed to null if any required value is not selected
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.black,
+                                      onPrimary: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0),
                                       ),
                                     ),
+                                    child: Text(
+                                      'Capture Attendance',
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
                                   ),
-                          SizedBox(height: 10.0),
 
-                      ElevatedButton(
-                        onPressed:
-                        _onCaptureAttendancePressed ,
-                          child: Text('Capture Attendance'), ),
-                                  Container(
-                                      child:   ElevatedButton(
-                                        onPressed:
-                                        onTapManual ,
-                                        child: Text('manual page'), )
-                                  ),]),),),
+                                ],),),),
 
-                              ]),))),
-                    ));
+                              ],),),),),
+                    ),),);
   }
-   // bool _canCaptureAttendance() {
-   //   return _selectedBranch != null &&
-   //       _selectedSubject != null &&
-   //       _selectedSection != null &&
-   //       _selectedDate != null;
-   // }
 
-   onTapManual() {
-     Navigator.push(
-         context,
-         MaterialPageRoute(builder: (context) => ManualUpdatePage(),
-         ));
-   }
 }
 

@@ -34,7 +34,6 @@ class ProfileSettingsPage extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -119,23 +118,27 @@ class ProfileSettingsPage extends StatelessWidget {
                               ),
                             ),
 
-                            CustomButton(
+                            Container(
+                              child:CustomButton(
                               height: getVerticalSize(56),
                               text: "Change Password",
                               margin: getMargin(left: 1, top: 54, bottom: 40),
                               fontStyle: ButtonFontStyle.InterSemiBold16,
                               onTap: () => onTapChangePassword(context),
-                            ),
-                            CustomButton(
+                            ),),
+                            SizedBox(height: 5),
+                           Container(
+                            child:CustomButton(
                               height: getVerticalSize(56),
                               text: "lbl_sign_out".tr,
                               margin: getMargin(left: 3, top: 56),
                               onTap: onTapSignOut,
-                            ),
+                            ),),
 
                           ],
+                            )
                         ),
-                      ),),],),),],),),),))));
+                      ),],),),],),),),),),),);
       }
 
       onTapBtnArrowleft() {
