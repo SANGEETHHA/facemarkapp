@@ -17,6 +17,10 @@ class SignInPageScreen extends StatefulWidget {
 }
 
 class _SignInPageScreenState extends State<SignInPageScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
   bool _rememberMe = false;
   final SignInPageController _signInPageController = SignInPageController();
   bool _isPasswordHidden = true;
@@ -39,11 +43,43 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
       }),
     );
 
-    if (response.statusCode == 200 ) {
-      Map<String, dynamic> responseData = json.decode(response.body);
-      // You can handle the response data here as required
-      print(responseData);
-      Get.toNamed(AppRoutes.homePageContainerScreen);
+    // if (response.statusCode == 200 ) {
+    //   Map<String, dynamic> responseData = json.decode(response.body);
+    //   // You can handle the response data here as required
+    //   print(responseData);
+    //   Get.toNamed(AppRoutes.homePageContainerScreen);
+    // } else if (response.statusCode == 400) {
+    //   Map<String, dynamic> errorData = json.decode(response.body);
+    //   if (errorData.containsKey('non_field_errors')) {
+    //     throw Exception(errorData['non_field_errors'][0]);
+    //   } else {
+    //     throw Exception('Invalid email or password');
+    //   }
+    // } else {
+    //   // Handle other status codes or errors
+    //   throw Exception('Failed to login user');
+    // }
+
+    if (response.statusCode == 200) {
+      dynamic responseData;
+      try {
+        responseData = json.decode(response.body);
+      } catch (e) {
+        throw Exception('Invalid response data');
+      }
+
+      if (responseData is Map<String, dynamic>) {
+        String? token = responseData['key'];
+        if (token != null) {
+          // navigate to home screen
+          print('Login successful. Token: $token');
+          Get.offNamed(AppRoutes.homePageContainerScreen);
+        } else {
+          throw Exception('Failed to get token');
+        }
+      } else {
+        throw Exception('Invalid response data');
+      }
     } else if (response.statusCode == 400) {
       Map<String, dynamic> errorData = json.decode(response.body);
       if (errorData.containsKey('non_field_errors')) {
@@ -268,31 +304,29 @@ class _SignInPageScreenState extends State<SignInPageScreen> {
   }
 
   onTapLogin() async {
-   // Get.offNamed(AppRoutes.homePageContainerScreen);
+   Get.offNamed(AppRoutes.homePageContainerScreen);
 
-    if (_formKey.currentState!.validate()) {
-      try {
-        Map<String, dynamic> responseData = await loginUser(
-          _signInPageController.usernameController.text.trim(),
-          _signInPageController.emailController.text.trim(),
-          _signInPageController.passwordController.text.trim(),
-
-        );
-        // save the user token to local storage or state management
-        String? token  = responseData['key'];
-        if (token != null) {
-          // navigate to home screen
-          Get.offNamed(AppRoutes.homePageContainerScreen);
-        } else {
-          throw Exception('Failed to get token');
-        }
-      } catch (e) {
-        Get.snackbar('Error', e.toString(),
-            backgroundColor: ColorConstant.redA700);
-      }
-    }
-
-
+    // if (_formKey.currentState!.validate()) {
+    //   try {
+    //     Map<String, dynamic> responseData = await loginUser(
+    //       _signInPageController.usernameController.text.trim(),
+    //       _signInPageController.emailController.text.trim(),
+    //       _signInPageController.passwordController.text.trim(),
+    //
+    //     );
+    //     // save the user token to local storage or state management
+    //     String? token  = responseData['key'];
+    //     if (token != null) {
+    //       // navigate to home screen
+    //       Get.offNamed(AppRoutes.homePageContainerScreen);
+    //     } else {
+    //       throw Exception('Failed to get token');
+    //     }
+    //   } catch (e) {
+    //     Get.snackbar('Error', e.toString(),
+    //         backgroundColor: ColorConstant.redA700);
+    //   }
+    // }
    }
 }
 

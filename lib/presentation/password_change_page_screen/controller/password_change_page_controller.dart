@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class PasswordChangePageController extends GetxController {
 
-  late TextEditingController currentPasswordController;
   late TextEditingController newPasswordController;
   late TextEditingController confirmpasswordController;
 
@@ -15,7 +14,6 @@ class PasswordChangePageController extends GetxController {
   @override
   void onInit() {
   super.onInit();
-  currentPasswordController = TextEditingController();
   newPasswordController = TextEditingController();
   confirmpasswordController = TextEditingController();
   }
@@ -28,7 +26,6 @@ class PasswordChangePageController extends GetxController {
 
   @override
   void onClose() {
-  currentPasswordController.dispose();
   newPasswordController.dispose();
   confirmpasswordController.dispose();
   super.onClose();

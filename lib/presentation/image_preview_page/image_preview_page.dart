@@ -5,7 +5,7 @@ import 'package:facemarkapp/core/app_export.dart';
 import 'package:facemarkapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/presentation/home_page/home_page.dart';
-import 'dart:ui';
+// import 'dart:ui';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -34,10 +34,10 @@ class ImagePreviewPage extends StatefulWidget {
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
 
-  late String _selectedBranch='';
-  late String _selectedSection='';
-  late String _selectedSubject='';
-  late DateTime _selectedDate=DateTime.now();
+  // late String _selectedBranch='';
+  // late String _selectedSection='';
+  // late String _selectedSubject='';
+  // late DateTime _selectedDate=DateTime.now();
 
   // void _onSendImagePressed() async {
   //   final apiUrl = Uri.parse('http://facemark.me/face/recognise/');
@@ -271,7 +271,7 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
                               Text('Branch: $branch'),
                               Text('Section: $section'),
                               Text('Subject: $subject'),
-                              Text('Date: ${date?.toString()}'),
+                              Text('Date: ${date.toString()}'),
                               Container(
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),

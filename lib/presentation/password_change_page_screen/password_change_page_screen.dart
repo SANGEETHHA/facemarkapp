@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:facemarkapp/presentation/dashboard_page_screen/dashboard_page_screen.dart';
 import 'controller/password_change_page_controller.dart';
 import 'package:facemarkapp/core/app_export.dart';
@@ -12,27 +13,47 @@ import 'package:facemarkapp/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-// ignore_for_file: must_be_immutable
-class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
+// ignore_for_file: must_be_immutable// class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
+class PasswordChangePageScreen extends StatefulWidget {
+
+  PasswordChangePageScreen({Key? key}) : super(key: key);
+
+  @override
+  _PasswordChangePageScreenState createState() => _PasswordChangePageScreenState();
+}
+
+class _PasswordChangePageScreenState extends State<PasswordChangePageScreen> {
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool _isNewPasswordHidden = true;
+  bool _isConfirmPasswordHidden = true;
+
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  onTapSave() async {
+  Future<void> changePassword(String newPassword) async {
     if (_formKey.currentState!.validate()) {
       try {
-        final response = await http.post(Uri.parse('http://facemark.me/dj-rest-auth/password/change/'), body: {
-          'old_password': controller.currentPasswordController.text,
-          'new_password1': controller.newPasswordController.text,
-          'new_password2': controller.confirmpasswordController.text,
-        });
+        final apiUrl = Uri.parse('http://facemark.me/dj-rest-auth/password/change/');
 
+        final response = await http.post(
+            apiUrl,
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body:jsonEncode(<String, String> {
+              'new_password1': newPassword,
+              'new_password2': newPassword,
+            }
+            ));
         if (response.statusCode == 200) {
-          // Password changed successfully, you can show a success message or navigate to another screen
-          Get.toNamed(AppRoutes.profileSettingsPage);
+
+          print('Password changed successfully');
+          Get.offAll(() => ProfileSettingsPage());
         } else {
-          // Handle error, show a toast message or an error dialog
+          throw Exception('Failed to change password');
         }
       } catch (e) {
-        // Handle error, show a toast message or an error dialog
+
       }
     }
   }
@@ -41,9 +62,17 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: ColorConstant.teal300,
-            body: Form(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: ColorConstant.teal300,
+        body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: ConstrainedBox(
+        constraints: BoxConstraints(
+        minWidth: MediaQuery.of(context).size.width,
+        minHeight: MediaQuery.of(context).size.height,
+        ),
+        child: IntrinsicHeight(
+         child: Form(
                 key: _formKey,
                 child: Container(
                     height: size.height,
@@ -100,42 +129,7 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
                                                                 fontWeight: FontWeight.w700))
                                                       ]),
                                                       textAlign: TextAlign.left)),
-                                              Padding(
-                                                  padding: getPadding(left: 1, top: 23),
-                                                  child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                      text: "lbl_current".tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.black90001,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400)),
-                                                                  TextSpan(
-                                                                      text: "lbl_password2"
-                                                                          .tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.whiteA700,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400))
-                                                                ]),
-                                                            textAlign: TextAlign.left),
-                                                        CustomTextFormField(
-                                                          focusNode: FocusNode(),
-                                                          controller: controller.currentPasswordController,
-                                                          hintText: "current_password".tr,
-                                                          margin: getMargin(top: 5),
-                                                          textInputAction: TextInputAction.done,
-                                                          textInputType: TextInputType.visiblePassword,
 
-                                                        )
-                                                      ])),
 
                                               Padding(
                                                   padding: getPadding(left: 1, top: 23),
@@ -143,167 +137,88 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       children: [
-                                                        RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                      text: "lbl_new".tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.black90001,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400)),
-                                                                  TextSpan(
-                                                                      text: "lbl_password2"
-                                                                          .tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.whiteA700,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400))
-                                                                ]),
-                                                            textAlign: TextAlign.left),
-                                                        Obx(() =>
-                                                            CustomTextFormField(
-                                                                focusNode: FocusNode(),
-                                                                controller: controller.newPasswordController,
-                                                                hintText: "lbl_new_password".tr,
-                                                                margin: getMargin(top: 5),
-                                                                textInputAction: TextInputAction.done,
-                                                                textInputType: TextInputType.visiblePassword,
-                                                                suffix: InkWell(
-                                                                  onTap: () {
-                                                                    controller.isPasswordVisible.value = !controller.isPasswordVisible.value;
-                                                                  },
-                                                                  child: Container(
-                                                                    margin: getMargin(left: 30, top: 21, right: 18, bottom: 22),
-                                                                    child: Icon(
-                                                                      controller.isPasswordVisible.value ? Icons.visibility_off : Icons.visibility,
-                                                                      color: ColorConstant.gray500,
+                                                        Padding(
+                                                          padding: EdgeInsets.all(16),
+                                                          child: Column(
+                                                            children: [
+                                                              TextFormField(
+                                                                controller: _newPasswordController,
+                                                                obscureText: _isNewPasswordHidden,
+                                                                decoration: InputDecoration(
+                                                                  labelText: 'New Password',
+                                                                  suffixIcon: IconButton(
+                                                                    icon: Icon(
+                                                                      _isNewPasswordHidden
+                                                                          ? Icons.visibility_off
+                                                                          : Icons.visibility,
                                                                     ),
+                                                                    onPressed: () {
+                                                                      setState(() {
+                                                                        _isNewPasswordHidden = !_isNewPasswordHidden;
+                                                                      });
+                                                                    },
                                                                   ),
                                                                 ),
-                                                                suffixConstraints:
-                                                                BoxConstraints(maxHeight: getVerticalSize(56)),
-                                                                validator: (value) {
-                                                                  if (value == null || (!isValidPassword(value, isRequired: true))) {
-                                                                    return "Please enter valid password";
-                                                                  }
-                                                                  return null;
-                                                                },
-                                                                isObscureText: !controller.isPasswordVisible.value
-                                                            ))
-                                                      ])),
-
-                                              Padding(
-                                                  padding: getPadding(left: 1, top: 23),
-                                                  child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                      text: "lbl_confirm".tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.black90001,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400)),
-                                                                  TextSpan(
-                                                                      text: "lbl_password2"
-                                                                          .tr,
-                                                                      style: TextStyle(
-                                                                          color: ColorConstant.whiteA700,
-                                                                          fontSize: getFontSize(14),
-                                                                          fontFamily: 'Inter',
-                                                                          fontWeight: FontWeight.w400))
-                                                                ]),
-                                                            textAlign: TextAlign.left),
-                                                        Obx(() =>
-                                                            CustomTextFormField(
-                                                                focusNode: FocusNode(),
-                                                                controller: controller.confirmpasswordController,
-                                                                hintText: "lbl_repeat_password".tr,
-                                                                margin: getMargin(top: 5),
-                                                                textInputAction: TextInputAction.done,
-                                                                textInputType: TextInputType.visiblePassword,
-                                                                suffix: InkWell(
-                                                                  onTap: () {
-                                                                    controller.isPasswordVisible.value = !controller.isPasswordVisible.value;
-                                                                  },
-                                                                  child: Container(
-                                                                    margin: getMargin(left: 30, top: 21, right: 18, bottom: 22),
-                                                                    child: Icon(
-                                                                      controller.isPasswordVisible.value ? Icons.visibility_off : Icons.visibility,
-                                                                      color: ColorConstant.gray500,
+                                                              ),
+                                                              SizedBox(height: 16),
+                                                              TextFormField(
+                                                                controller: _confirmPasswordController,
+                                                                obscureText: _isConfirmPasswordHidden,
+                                                                decoration: InputDecoration(
+                                                                  labelText: 'Confirm Password',
+                                                                  suffixIcon: IconButton(
+                                                                    icon: Icon(
+                                                                      _isConfirmPasswordHidden
+                                                                          ? Icons.visibility_off
+                                                                          : Icons.visibility,
                                                                     ),
+                                                                    onPressed: () {
+                                                                      setState(() {
+                                                                        _isConfirmPasswordHidden = !_isConfirmPasswordHidden;
+                                                                      });
+                                                                    },
                                                                   ),
                                                                 ),
-                                                                suffixConstraints:
-                                                                BoxConstraints(maxHeight: getVerticalSize(56)),
-                                                                validator: (value) {
-                                                                  if (value == null || (!isValidPassword(value, isRequired: true))) {
-                                                                    return "Please enter valid password";
+                                                              ),
+                                                              SizedBox(height: 16),
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  String newPassword = _newPasswordController.text.trim();
+                                                                  String confirmPassword = _confirmPasswordController.text.trim();
+                                                                  if (newPassword == confirmPassword) {
+                                                                    changePassword(newPassword);
+                                                                  } else {
+                                                                    showDialog(
+                                                                      context: context,
+                                                                      builder: (context) {
+                                                                        return AlertDialog(
+                                                                          title: Text('Error'),
+                                                                          content: Text('Passwords do not match'),
+                                                                          actions: [
+                                                                            TextButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Text('OK'),
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    );
                                                                   }
-                                                                  return null;
                                                                 },
-                                                                isObscureText: !controller.isPasswordVisible.value
-                                                            ))
+                                                                child: Text('Change Password'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+
                                                       ])),
-                                              CustomButton(
-                                                height: getVerticalSize(56),
-                                                text: "lbl_save".tr,
-                                                margin: getMargin(left: 1, top: 49),
-                                                onTap: onTapSavePassword,
-                                              ),
                                             ])),
                                     Spacer()
                                   ])))
                     ]))),
-            bottomNavigationBar:
-            CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Get.toNamed(getCurrentRoute(type), id: 1);
-            })));
-  }
-
-  String getCurrentRoute(BottomBarEnum type) {
-    switch (type) {
-      case BottomBarEnum.Volume:
-        return AppRoutes.homePage;
-      case BottomBarEnum.History:
-        return AppRoutes.imagePreviewPage;
-      case BottomBarEnum.Grid:
-        return AppRoutes.dashboardPageScreen;
-      case BottomBarEnum.Computer:
-        return AppRoutes.profileSettingsPage;
-      default:
-        return "/";
-    }
-  }
-
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.homePage:
-        return Homepage();
-      case AppRoutes.imagePreviewPage:
-        var pickedFile;
-        String _selectedBranch = "";
-        String _selectedSection = "";
-        String _selectedSubject = "";
-        DateTime _selectedDate= DateTime.now();
-        return ImagePreviewPage(imagePath: pickedFile.path,branch: _selectedBranch,
-            section: _selectedSection,
-            subject: _selectedSubject,
-            date: _selectedDate);
-      case AppRoutes.dashboardPageScreen:
-        return DashboardPageScreen();
-      case AppRoutes.profileSettingsPage:
-        return ProfileSettingsPage();
-      default:
-        return DefaultWidget();
-    }
+        )))));
   }
 
   onTapSavePassword() {
@@ -311,7 +226,7 @@ class PasswordChangePageScreen extends GetWidget<PasswordChangePageController> {
   }
 
   onTapBtnArrowleft() {
-    Get.back();
+    Get.previousRoute;
   }
 }
 

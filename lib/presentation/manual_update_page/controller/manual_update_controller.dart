@@ -3,7 +3,7 @@ import 'package:facemarkapp/presentation/manual_update_page/models/manual_update
 
 class ManualUpdateController extends GetxController {
   ManualUpdateController(this.manualUpdateModelObj);
-
+  RxList<String> usns = <String>[].obs;
   Rx<ManualUpdateModel> manualUpdateModelObj;
 
   SelectionPopupModel? selectedDropDownValue;

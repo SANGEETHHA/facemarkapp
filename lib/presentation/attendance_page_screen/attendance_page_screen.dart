@@ -25,9 +25,11 @@ class AttendancePageScreen extends StatefulWidget {
     required this.usns,
   });
 
+  static get usnList => null;
+
   @override
   _AttendancePageScreenState createState() => _AttendancePageScreenState();
-}
+   }
 
 class _AttendancePageScreenState extends State<AttendancePageScreen> {
   List<String> usns = [];
@@ -92,7 +94,7 @@ class _AttendancePageScreenState extends State<AttendancePageScreen> {
                           Text('Branch: $branch'),
                           Text('Section: $section'),
                           Text('Subject: $subject'),
-                          Text('Date: ${date?.toString()}'),
+                          Text('Date: ${date.toString()}'),
                           Center(
                             child: DataTable(
                               columns: [

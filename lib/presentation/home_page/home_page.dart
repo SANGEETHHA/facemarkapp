@@ -1,6 +1,7 @@
 import 'package:facemarkapp/presentation/image_preview_page/image_preview_page.dart';
 import 'package:facemarkapp/presentation/attendance_page_screen/attendance_page_screen.dart';
 import 'package:facemarkapp/core/app_export.dart';
+import 'package:facemarkapp/presentation/manual_update_page/manual_update_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facemarkapp/widgets/app_bar/appbar_image.dart';
 import 'package:facemarkapp/widgets/app_bar/custom_app_bar.dart';
@@ -307,7 +308,14 @@ class _HomePageState extends State<Homepage> {
                       ElevatedButton(
                         onPressed:
                         _onCaptureAttendancePressed ,
-                          child: Text('Capture Attendance'), )]),),),
+                          child: Text('Capture Attendance'), ),
+                                  Container(
+                                      child:   ElevatedButton(
+                                        onPressed:
+                                        onTapManual ,
+                                        child: Text('manual page'), )
+                                  ),]),),),
+
                               ]),))),
                     ));
   }
@@ -317,5 +325,12 @@ class _HomePageState extends State<Homepage> {
    //       _selectedSection != null &&
    //       _selectedDate != null;
    // }
+
+   onTapManual() {
+     Navigator.push(
+         context,
+         MaterialPageRoute(builder: (context) => ManualUpdatePage(),
+         ));
+   }
 }
 
